@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Parking - Parke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+        }
+
+        .header:hover::before {
+            transform: translateX(100%);
+            transition: transform 0.8s ease;
+        }
+
+        .header h1 a {
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .header h1 a:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 5px;
+            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .search-filters {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .results-info {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .results-info p {
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .parking-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .parking-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .parking-image {
+            position: relative;
+            width: 350px;
+            min-width: 350px;
+            overflow: hidden;
+        }
+
+        .parking-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .parking-card:hover .parking-img {
+            transform: scale(1.1);
+        }
+
+        .no-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--gray);
+            font-size: 3.5rem;
+        }
+
+        .no-image span {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8));
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .parking-image:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .view-images-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .view-images-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .parking-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .parking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .parking-header h3 {
+            margin: 0;
+            color: var(--dark);
+            flex: 1;
+            margin-right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .parking-rating {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .parking-details {
+            flex: 1;
+            margin-bottom: 2rem;
+        }
+
+        .parking-details p {
+            margin-bottom: 1rem;
+            color: var(--gray);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .parking-details strong {
+            color: var(--dark);
+            min-width: 140px;
+            font-weight: 600;
+        }
+
+        .parking-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .parking-actions .btn {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            width: 900px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f1f5f9;
+            background: white;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--dark);
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 0;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+            background: #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 0;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-direction: column;
+            height: 550px;
+        }
+
+        .main-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8fafc;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        .main-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .image-thumbnails {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid #f1f5f9;
+            overflow-x: auto;
+        }
+
+        .thumbnail {
+            width: 90px;
+            height: 70px;
+            object-fit: cover;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 2px dashed #e2e8f0;
+        }
+
+        .no-results h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .no-results p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .no-results a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .no-results a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .parking-image {
+                width: 300px;
+                min-width: 300px;
+            }
+            
+            .parking-img,
+            .no-image {
+                height: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .search-filters {
+                padding: 1.5rem;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+            }
+            
+            .parking-card {
+                flex-direction: column;
+            }
+            
+            .parking-image {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .parking-img,
+            .no-image {
+                height: 200px;
+            }
+            
+            .parking-content {
+                padding: 1.5rem;
+            }
+            
+            .parking-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .parking-header h3 {
+                margin-right: 0;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+            
+            .image-gallery {
+                height: 450px;
+            }
+            
+            .thumbnail {
+                width: 70px;
+                height: 55px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .parking-actions {
+                flex-direction: column;
+            }
+            
+            .parking-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .parking-details p {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .parking-details strong {
+                min-width: auto;
+            }
+            
+            .image-thumbnails {
+                padding: 1rem;
+            }
+            
+            .thumbnail {
+                width: 60px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <div class="nav-links">
+            <a href="find_parking.html">Find Parking</a>
+            <a href="my_reservations.html">My Reservations</a>
+            <a href="payment.html">Payment Methods</a>
+            <a href="notifications.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Find Parking</h1>
+        
+        <div class="search-filters">
+            <form method="GET" class="filter-form" id="searchForm">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" name="search" id="searchInput" placeholder="Name or address...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Min Rating</label>
+                        <select name="rating_min" id="ratingSelect">
+                            <option value="">Any Rating</option>
+                            <option value="4">4+ ⭐</option>
+                            <option value="3">3+ ⭐</option>
+                            <option value="2">2+ ⭐</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn">Apply Filters</button>
+                    <a href="find_parking.html" class="btn btn-secondary">Clear All</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="results-info">
+            <p id="resultsCount">Found 0 parking lot(s)</p>
+        </div>
+
+        <div class="parking-list" id="parkingList">
+            <!-- Parking lots will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <div id="imageModal" class="image-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Parking Lot Images</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="image-gallery">
+                    <div class="main-image">
+                        <img id="mainGalleryImage" src="" alt="Parking lot image">
+                    </div>
+                    <div class="image-thumbnails" id="imageThumbnails">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample parking lot data
+        const parkingLots = [
+            {
+                id: 1,
+                name: "Downtown Premium Parking",
+                address: "123 Main Street, Downtown",
+                rating: 4.5,
+                available_slots_count: 15,
+                price_per_hour: 5000,
+                amenities: "Security, CCTV, Covered",
+                images: [
+                    "https://images.unsplash.com/photo-1547866951-4463f95ad763?w=500",
+                    "https://images.unsplash.com/photo-1551524165-23c6c4c9b6c4?w=500",
+                    "https://images.unsplash.com/photo-1577702312317-0d4c72f6c8b8?w=500"
+                ]
+            },
+            {
+                id: 2,
+                name: "Mall Parking Complex",
+                address: "456 Shopping Avenue",
+                rating: 4.2,
+                available_slots_count: 8,
+                price_per_hour: 3000,
+                amenities: "24/7 Access, Security, Lighting",
+                images: [
+                    "https://images.unsplash.com/photo-1547866951-4463f95ad763?w=500",
+                    "https://images.unsplash.com/photo-1577702312317-0d4c72f6c8b8?w=500"
+                ]
+            },
+            {
+                id: 3,
+                name: "Airport Express Parking",
+                address: "789 Airport Road",
+                rating: 4.8,
+                available_slots_count: 25,
+                price_per_hour: 8000,
+                amenities: "Shuttle Service, Security, Valet",
+                images: [
+                    "https://images.unsplash.com/photo-1551524165-23c6c4c9b6c4?w=500"
+                ]
+            },
+            {
+                id: 4,
+                name: "City Center Garage",
+                address: "321 Central Plaza",
+                rating: 3.9,
+                available_slots_count: 5,
+                price_per_hour: 4500,
+                amenities: "Covered, Security",
+                images: []
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadParkingLots();
+            updateNotificationBadge();
+            loadFiltersFromURL();
+            
+            // Handle form submission
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                filterParkingLots();
+            });
+        });
+
+        // Load parking lots based on filters
+        function loadParkingLots() {
+            const searchParams = new URLSearchParams(window.location.search);
+            const search = searchParams.get('search') || '';
+            const ratingMin = searchParams.get('rating_min') || '';
+            
+            let filteredLots = parkingLots;
+            
+            // Apply search filter
+            if (search) {
+                filteredLots = filteredLots.filter(lot => 
+                    lot.name.toLowerCase().includes(search.toLowerCase()) ||
+                    lot.address.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+            
+            // Apply rating filter
+            if (ratingMin) {
+                filteredLots = filteredLots.filter(lot => lot.rating >= parseFloat(ratingMin));
+            }
+            
+            displayParkingLots(filteredLots);
+        }
+
+        // Display parking lots in the UI
+        function displayParkingLots(lots) {
+            const parkingList = document.getElementById('parkingList');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = `Found ${lots.length} parking lot(s)`;
+            
+            if (lots.length === 0) {
+                parkingList.innerHTML = `
+                    <div class="no-results">
+                        <h3>No parking lots found</h3>
+                        <p>Try adjusting your search filters or <a href="find_parking.html">browse all parking lots</a>.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            parkingList.innerHTML = lots.map(lot => `
+                <div class="parking-card">
+                    <div class="parking-image">
+                        ${lot.images.length > 0 ? 
+                            `<img src="${lot.images[0]}" alt="${lot.name}" class="parking-img">` :
+                            `<div class="no-image">
+                                🅿️
+                                <span>No Image Available</span>
+                            </div>`
+                        }
+                        ${lot.images.length > 0 ? `
+                            <div class="image-overlay">
+                                <button class="view-images-btn" onclick="viewParkingImages(${lot.id})">
+                                    📷 View Images
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="parking-content">
+                        <div class="parking-header">
+                            <h3>${lot.name}</h3>
+                            <div class="parking-rating">
+                                ⭐ ${lot.rating.toFixed(1)}
+                            </div>
+                        </div>
+                        
+                        <div class="parking-details">
+                            <p><strong>📍 Address:</strong> ${lot.address}</p>
+                            <p><strong>🅿️ Available Slots:</strong> ${lot.available_slots_count} slots</p>
+                            <p><strong>💰 Price:</strong> UGX ${lot.price_per_hour.toLocaleString()}/hour</p>
+                            
+                            ${lot.amenities ? `
+                                <p><strong>🎯 Amenities:</strong> ${lot.amenities}</p>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="parking-actions">
+                            <a href="parking_details.html?lot_id=${lot.id}" class="btn btn-secondary">View Details</a>
+                            <a href="reserve_parking.html?lot_id=${lot.id}" class="btn">Reserve Now</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter parking lots and update URL
+        function filterParkingLots() {
+            const search = document.getElementById('searchInput').value;
+            const ratingMin = document.getElementById('ratingSelect').value;
+            
+            const params = new URLSearchParams();
+            if (search) params.set('search', search);
+            if (ratingMin) params.set('rating_min', ratingMin);
+            
+            // Update URL without page reload
+            const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+            window.history.pushState({}, '', newUrl);
+            
+            loadParkingLots();
+        }
+
+        // Load filters from URL parameters
+        function loadFiltersFromURL() {
+            const searchParams = new URLSearchParams(window.location.search);
+            const search = searchParams.get('search') || '';
+            const ratingMin = searchParams.get('rating_min') || '';
+            
+            document.getElementById('searchInput').value = search;
+            document.getElementById('ratingSelect').value = ratingMin;
+        }
+
+        // View parking lot images
+        function viewParkingImages(parkingLotId) {
+            const lot = parkingLots.find(l => l.id === parkingLotId);
+            if (!lot) return;
+            
+            const modal = document.getElementById('imageModal');
+            const mainImage = document.getElementById('mainGalleryImage');
+            const thumbnailsContainer = document.getElementById('imageThumbnails');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = `${lot.name} - Images`;
+            
+            if (lot.images.length === 0) {
+                mainImage.src = '';
+                mainImage.alt = 'No images available';
+                thumbnailsContainer.innerHTML = '<p>No images available for this parking lot.</p>';
+            } else {
+                mainImage.src = lot.images[0];
+                mainImage.alt = `${lot.name} image`;
+                
+                thumbnailsContainer.innerHTML = '';
+                lot.images.forEach((image, index) => {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = image;
+                    thumbnail.alt = `${lot.name} image ${index + 1}`;
+                    thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
+                    thumbnail.onclick = () => {
+                        mainImage.src = image;
+                        document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+                        thumbnail.classList.add('active');
+                    };
+                    thumbnailsContainer.appendChild(thumbnail);
+                });
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        // Modal close functionality
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('imageModal').style.display = 'none';
+        });
+
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('imageModal').style.display = 'none';
+            }
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function() {
+            loadFiltersFromURL();
+            loadParkingLots();
+        });
+    </script>
+</body>
+</html>

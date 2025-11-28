@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Methods - Parke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+        }
+
+        .header:hover::before {
+            transform: translateX(100%);
+            transition: transform 0.8s ease;
+        }
+
+        .header h1 a {
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .header h1 a:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 5px;
+            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            border-left: 4px solid white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            border-left: 4px solid white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payment-layout {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .payment-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .payment-section:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .payment-card {
+            max-width: 600px;
+        }
+
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group small {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .form-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid var(--gray);
+            cursor: pointer;
+        }
+
+        .form-check label {
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .payment-method-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .payment-method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .payment-method-card.default {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .payment-method-card.default::before {
+            background: var(--secondary);
+        }
+
+        .payment-method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .method-type {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .default-badge {
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .method-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            letter-spacing: 1px;
+        }
+
+        .expiry, .added-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .method-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-history {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .payment-history table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .payment-history th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.25rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-history td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: var(--transition);
+        }
+
+        .payment-history tr:hover td {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .payment-history tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .amount.negative {
+            color: var(--danger);
+        }
+
+        .status-completed {
+            color: var(--secondary);
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            color: var(--warning);
+            font-weight: 700;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-failed {
+            color: var(--danger);
+            font-weight: 700;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .transaction-summary {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .no-methods, .no-history {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--gray);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .security-note {
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary);
+            font-size: 0.9rem;
+            color: var(--dark);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .security-note::before {
+            content: '🔒';
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .payment-section {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .method-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .method-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .method-actions form {
+                width: 100%;
+            }
+            
+            .method-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .payment-history {
+                font-size: 0.9rem;
+            }
+            
+            .payment-history th,
+            .payment-history td {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-method-card {
+                padding: 1.5rem;
+            }
+            
+            .card-number {
+                font-size: 1.1rem;
+            }
+            
+            .empty-state {
+                padding: 1rem;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group input:invalid {
+            border-color: var(--danger);
+        }
+
+        .form-group input:valid {
+            border-color: var(--secondary);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <div class="nav-links">
+            <a href="find_parking.html">Find Parking</a>
+            <a href="my_reservations.html">My Reservations</a>
+            <a href="payment.html">Payment Methods</a>
+            <a href="notifications.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Payment Methods</h1>
+        
+        <div class="alert-success" id="successAlert" style="display: none;">
+            ✅ Payment method added successfully!
+        </div>
+        
+        <div class="alert-error" id="errorAlert" style="display: none;">
+            ❌ Error message will appear here
+        </div>
+        
+        <div class="payment-layout">
+            <div class="payment-section">
+                <h2>Add Payment Method</h2>
+                <div class="payment-card">
+                    <form id="paymentForm" class="payment-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Card Number *</label>
+                                <input type="text" name="card_number" id="cardNumber" placeholder="1234 5678 9012 3456" required 
+                                       pattern="[0-9\s]{13,19}" maxlength="19">
+                                <small>Enter 16-digit card number</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Card Holder Name *</label>
+                                <input type="text" name="card_holder" id="cardHolder" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date *</label>
+                                <input type="text" name="expiry_date" id="expiryDate" placeholder="MM/YY" required 
+                                       pattern="(0[1-9]|1[0-2])\/[0-9]{2}">
+                                <small>Format: MM/YY</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>CVV *</label>
+                                <input type="text" name="cvv" id="cvv" placeholder="123" required 
+                                       pattern="[0-9]{3,4}" maxlength="4">
+                                <small>3 or 4 digits on back of card</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" name="is_default" id="isDefault">
+                            <label for="isDefault">Set as default payment method</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-large">Add Payment Method</button>
+                    </form>
+                    
+                    <div class="security-note">
+                        Your payment information is securely encrypted and stored. We never store your full card details.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-section">
+                <h2>Saved Payment Methods</h2>
+                
+                <div class="saved-methods" id="savedMethods">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="payment-section">
+                <h2>Recent Transactions</h2>
+                
+                <div class="payment-history" id="paymentHistory">
+                    <!-- Transaction history will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePaymentData();
+            loadPaymentMethods();
+            loadTransactionHistory();
+            updateNotificationBadge();
+            setupFormHandlers();
+            setupInputFormatting();
+        });
+
+        // Initialize payment data in localStorage
+        function initializePaymentData() {
+            if (!localStorage.getItem('payment_methods')) {
+                localStorage.setItem('payment_methods', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('transactions')) {
+                localStorage.setItem('transactions', JSON.stringify([]));
+            }
+        }
+
+        // Load and display payment methods
+        function loadPaymentMethods() {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const savedMethods = document.getElementById('savedMethods');
+            
+            if (paymentMethods.length === 0) {
+                savedMethods.innerHTML = `
+                    <div class="no-methods">
+                        <div class="empty-state">
+                            <h3>No payment methods saved</h3>
+                            <p>Add your first payment method to make reservations faster!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            savedMethods.innerHTML = paymentMethods.map(method => `
+                <div class="payment-method-card ${method.isDefault ? 'default' : ''}">
+                    <div class="method-header">
+                        <div class="method-type">
+                            ${getCardIcon(method.cardType)} ${method.cardType}
+                        </div>
+                        ${method.isDefault ? '<span class="default-badge">Default</span>' : ''}
+                    </div>
+                    
+                    <div class="method-details">
+                        <div class="card-number">**** **** **** ${method.lastFour}</div>
+                        <div class="expiry">Expires: ${method.expiryDate}</div>
+                        <div class="added-date">Added: ${formatDate(method.createdAt)}</div>
+                    </div>
+                    
+                    <div class="method-actions">
+                        ${!method.isDefault ? `
+                            <button type="button" class="btn btn-small" onclick="setDefaultPayment('${method.id}')">
+                                Set as Default
+                            </button>
+                        ` : ''}
+                        
+                        <button type="button" class="btn btn-small btn-danger" onclick="deletePaymentMethod('${method.id}')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load transaction history
+        function loadTransactionHistory() {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const paymentHistory = document.getElementById('paymentHistory');
+            
+            if (transactions.length === 0) {
+                paymentHistory.innerHTML = `
+                    <div class="no-history">
+                        <div class="empty-state">
+                            <h3>No transactions yet</h3>
+                            <p>Your transaction history will appear here after you make reservations.</p>
+                            <a href="find_parking.html" class="btn">Find Parking</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort transactions by date (newest first)
+            transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            paymentHistory.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${transactions.map(transaction => `
+                            <tr>
+                                <td>${formatDate(transaction.createdAt)}</td>
+                                <td>
+                                    ${transaction.type === 'reservation' ? 
+                                        '🅿️ Parking: ' + transaction.description : 
+                                        '💳 ' + transaction.description
+                                    }
+                                </td>
+                                <td class="amount ${transaction.amount < 0 ? 'negative' : ''}">
+                                    UGX ${Math.abs(transaction.amount).toLocaleString()}
+                                </td>
+                                <td>
+                                    <span class="status-${transaction.status}">
+                                        ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Setup form handlers
+        function setupFormHandlers() {
+            document.getElementById('paymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addPaymentMethod();
+            });
+        }
+
+        // Setup input formatting
+        function setupInputFormatting() {
+            const cardNumberInput = document.getElementById('cardNumber');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue.trim();
+            });
+            
+            const expiryInput = document.getElementById('expiryDate');
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                }
+                e.target.value = value;
+            });
+        }
+
+        // Add new payment method
+        function addPaymentMethod() {
+            const formData = new FormData(document.getElementById('paymentForm'));
+            const cardNumber = formData.get('card_number').replace(/\s/g, '');
+            const cardHolder = formData.get('card_holder');
+            const expiryDate = formData.get('expiry_date');
+            const cvv = formData.get('cvv');
+            const isDefault = document.getElementById('isDefault').checked;
+
+            // Validation
+            if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                showError('Invalid card number. Must be 16 digits.');
+                return;
+            }
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+                showError('Invalid expiry date format. Use MM/YY.');
+                return;
+            }
+
+            if (!/^\d{3,4}$/.test(cvv)) {
+                showError('Invalid CVV. Must be 3 or 4 digits.');
+                return;
+            }
+
+            // Determine card type
+            const firstDigit = cardNumber.charAt(0);
+            let cardType = 'Other';
+            if (firstDigit === '4') cardType = 'Visa';
+            else if (firstDigit === '5') cardType = 'Mastercard';
+            else if (firstDigit === '3') cardType = 'American Express';
+
+            const lastFour = cardNumber.slice(-4);
+
+            // Create payment method object
+            const paymentMethod = {
+                id: Date.now().toString(),
+                cardType: cardType,
+                lastFour: lastFour,
+                expiryDate: expiryDate,
+                cardHolder: cardHolder,
+                isDefault: isDefault,
+                createdAt: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            
+            // If setting as default, remove default from others
+            if (isDefault) {
+                paymentMethods.forEach(method => method.isDefault = false);
+            }
+            
+            paymentMethods.push(paymentMethod);
+            localStorage.setItem('payment_methods', JSON.stringify(paymentMethods));
+
+            showSuccess('Payment method added successfully!');
+            document.getElementById('paymentForm').reset();
+            loadPaymentMethods();
+        }
+
+        // Set default payment method
+        function setDefaultPayment(methodId) {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            
+            paymentMethods.forEach(method => {
+                method.isDefault = method.id === methodId;
+            });
+            
+            localStorage.setItem('payment_methods', JSON.stringify(paymentMethods));
+            showSuccess('Default payment method updated!');
+            loadPaymentMethods();
+        }
+
+        // Delete payment method
+        function deletePaymentMethod(methodId) {
+            if (!confirm('Are you sure you want to delete this payment method?')) {
+                return;
+            }
+
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const filteredMethods = paymentMethods.filter(method => method.id !== methodId);
+            
+            localStorage.setItem('payment_methods', JSON.stringify(filteredMethods));
+            showSuccess('Payment method deleted!');
+            loadPaymentMethods();
+        }
+
+        // Get card icon based on type
+        function getCardIcon(cardType) {
+            switch(cardType) {
+                case 'Visa': return '💳';
+                case 'Mastercard': return '💳';
+                case 'American Express': return '💳';
+                default: return '💳';
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successAlert = document.getElementById('successAlert');
+            successAlert.textContent = `✅ ${message}`;
+            successAlert.style.display = 'flex';
+            
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = `❌ ${message}`;
+            errorAlert.style.display = 'flex';
+            
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize sample data if empty
+        function initializeSampleData() {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+
+            if (paymentMethods.length === 0) {
+                const sampleMethods = [
+                    {
+                        id: '1',
+                        cardType: 'Visa',
+                        lastFour: '1234',
+                        expiryDate: '12/25',
+                        cardHolder: 'John Doe',
+                        isDefault: true,
+                        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days ago
+                    }
+                ];
+                localStorage.setItem('payment_methods', JSON.stringify(sampleMethods));
+            }
+
+            if (transactions.length === 0) {
+                const sampleTransactions = [
+                    {
+                        type: 'reservation',
+                        description: 'Downtown Premium Parking',
+                        amount: -15000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+                    },
+                    {
+                        type: 'reservation',
+                        description: 'Mall Parking Complex',
+                        amount: -6000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
+                    },
+                    {
+                        type: 'payment',
+                        description: 'Card Payment - Visa',
+                        amount: 21000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
+                    }
+                ];
+                localStorage.setItem('transactions', JSON.stringify(sampleTransactions));
+            }
+        }
+
+        // Call sample data initialization
+        initializeSampleData();
+    </script>
+</body>
+</html>

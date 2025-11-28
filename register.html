@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Parke Smart Parking</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 2rem;
+        }
+
+        .user-type-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-type-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-type-btn.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .user-type-btn.driver.active {
+            color: var(--secondary);
+        }
+
+        .user-type-btn.operator.active {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-driver {
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-driver:hover {
+            background: #0da271;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-operator {
+            background: var(--accent);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-operator:hover {
+            background: #d97706;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--gray);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                margin-top: 70px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Park<span>e</span></a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Create Your Account</h1>
+            <p>Join thousands of users on our smart parking platform</p>
+        </div>
+
+        <div class="form-container">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="user-type-toggle">
+                <button class="user-type-btn driver active" onclick="setUserType('driver')">Driver</button>
+                <button class="user-type-btn operator" onclick="setUserType('operator')">Operator</button>
+            </div>
+
+            <form id="registerForm">
+                <input type="hidden" name="user_type" id="userType" value="driver">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div id="driverFields">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="car_plate">Car License Plate</label>
+                        <input type="text" id="car_plate" name="car_plate">
+                    </div>
+                </div>
+
+                <div id="operatorFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="company_name">Company Name</label>
+                        <input type="text" id="company_name" name="company_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="business_phone">Business Phone</label>
+                        <input type="tel" id="business_phone" name="business_phone">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-driver" id="submitBtn">Create Account</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="index.html">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize user data in localStorage if not exists
+        function initializeUserData() {
+            if (!localStorage.getItem('drivers')) {
+                localStorage.setItem('drivers', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('operators')) {
+                localStorage.setItem('operators', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('currentUser')) {
+                localStorage.setItem('currentUser', JSON.stringify(null));
+            }
+        }
+
+        // Set user type (driver or operator)
+        function setUserType(type) {
+            document.getElementById('userType').value = type;
+            
+            // Update active button
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.user-type-btn.${type}`).classList.add('active');
+            
+            // Toggle fields
+            if (type === 'driver') {
+                document.getElementById('driverFields').style.display = 'block';
+                document.getElementById('operatorFields').style.display = 'none';
+                document.getElementById('submitBtn').className = 'btn btn-driver';
+            } else {
+                document.getElementById('driverFields').style.display = 'none';
+                document.getElementById('operatorFields').style.display = 'block';
+                document.getElementById('submitBtn').className = 'btn btn-operator';
+            }
+        }
+
+        // Validate email format
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Check if username or email already exists
+        function userExists(username, email, userType) {
+            const users = JSON.parse(localStorage.getItem(userType === 'driver' ? 'drivers' : 'operators'));
+            return users.some(user => user.username === username || user.email === email);
+        }
+
+        // Handle form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            // Hide previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Validate required fields
+            if (!username || !email || !password) {
+                showError('All fields are required');
+                return;
+            }
+            
+            // Validate email format
+            if (!validateEmail(email)) {
+                showError('Invalid email format');
+                return;
+            }
+            
+            // Check if user already exists
+            if (userExists(username, email, userType)) {
+                showError('Username or email already exists');
+                return;
+            }
+            
+            // Create user object
+            const user = {
+                id: Date.now(), // Simple ID generation
+                username: username,
+                email: email,
+                password: btoa(password), // Simple encoding (not secure for production)
+                created_at: new Date().toISOString()
+            };
+            
+            // Add user-specific fields
+            if (userType === 'driver') {
+                user.phone = document.getElementById('phone').value;
+                user.car_plate = document.getElementById('car_plate').value;
+                
+                // Save to drivers
+                const drivers = JSON.parse(localStorage.getItem('drivers'));
+                drivers.push(user);
+                localStorage.setItem('drivers', JSON.stringify(drivers));
+                
+                // Set as current user
+                localStorage.setItem('currentUser', JSON.stringify({
+                    user_id: user.id,
+                    username: user.username,
+                    user_type: 'driver',
+                    email: user.email,
+                    phone: user.phone,
+                    car_plate: user.car_plate
+                }));
+                
+                showSuccess('Driver account created successfully! Redirecting...');
+                
+                // Redirect to driver dashboard after a delay
+                setTimeout(() => {
+                    window.location.href = 'driver_dashboard.html';
+                }, 2000);
+                
+            } else {
+                user.company_name = document.getElementById('company_name').value;
+                user.business_phone = document.getElementById('business_phone').value;
+                
+                // Save to operators
+                const operators = JSON.parse(localStorage.getItem('operators'));
+                operators.push(user);
+                localStorage.setItem('operators', JSON.stringify(operators));
+                
+                // Set as current user
+                localStorage.setItem('currentUser', JSON.stringify({
+                    user_id: user.id,
+                    username: user.username,
+                    user_type: 'operator',
+                    email: user.email,
+                    company_name: user.company_name,
+                    phone: user.business_phone
+                }));
+                
+                showSuccess('Operator account created successfully! Redirecting...');
+                
+                // Redirect to operator dashboard after a delay
+                setTimeout(() => {
+                    window.location.href = 'operator_dashboard.html';
+                }, 2000);
+            }
+        });
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUserData();
+            setUserType('driver');
+        });
+    </script>
+</body>
+</html>

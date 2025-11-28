@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - Parke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Arial', sans-serif;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover, .nav-links a:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .stat-card:nth-child(1)::before { background: var(--primary); }
+        .stat-card:nth-child(2)::before { background: var(--secondary); }
+        .stat-card:nth-child(3)::before { background: var(--accent); }
+        .stat-card:nth-child(4)::before { background: #2196F3; }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card:nth-child(1) .stat-number { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(2) .stat-number { 
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(3) .stat-number { 
+            background: linear-gradient(135deg, var(--accent), #e68900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(4) .stat-number { 
+            background: linear-gradient(135deg, #2196F3, #0b79d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .filter-form h3 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1.5rem;
+            align-items: end;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+        
+        tr:hover td {
+            background: #f7fafc;
+            transform: scale(1.02);
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            height: 350px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            th, td {
+                padding: 1rem 0.5rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <!-- Include Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, <span id="adminName">Admin</span>! 👑</h1>
+        <div class="nav-links">
+            <a href="admin_dashboard.html">📊 Dashboard</a>
+            <a href="admin_parking_lots.html">🅿️ Parking Lots</a>
+            <a href="admin_drivers.html">👥 Drivers</a>
+            <a href="admin_operators.html">🏢 Operators</a>
+            <a href="admin_reservations.html">📋 Reservations</a>
+            <a href="admin_reports.html" class="active">📈 Reports</a>
+            <a href="admin_settings.html">⚙️ Settings</a>
+            <a href="logout.html" class="logout-btn">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>📈 Reports & Analytics</h1>
+        </div>
+        
+        <div class="filter-form">
+            <h3>Filter Reports</h3>
+            <form id="filterForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalReservations">0</div>
+                <div class="stat-label">Total Reservations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">UGX 0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgRevenue">UGX 0</div>
+                <div class="stat-label">Average per Booking</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="uniqueDrivers">0</div>
+                <div class="stat-label">Unique Drivers</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Revenue Trend</h2>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Parking Lot Performance</h2>
+                <div class="table-responsive">
+                    <table id="lotPerformanceTable">
+                        <thead>
+                            <tr>
+                                <th>Parking Lot</th>
+                                <th>Reservations</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lotPerformanceBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Reservation Status</h2>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Daily Revenue Report</h2>
+            <div class="table-responsive">
+                <table id="dailyRevenueTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Reservations</th>
+                            <th>Daily Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dailyRevenueBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="export-buttons">
+                <button onclick="exportToCSV()" class="btn btn-primary">Export to CSV</button>
+                <button onclick="exportToPDF()" class="btn btn-secondary">Export to PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data for reports
+        let reportData = {
+            overall_stats: {
+                total_reservations: 1247,
+                total_revenue: 3856900,
+                avg_revenue_per_booking: 3093,
+                unique_drivers: 843
+            },
+            revenue_data: [
+                { date: '2023-10-01', reservation_count: 45, daily_revenue: 139185 },
+                { date: '2023-10-02', reservation_count: 52, daily_revenue: 160836 },
+                { date: '2023-10-03', reservation_count: 38, daily_revenue: 117534 },
+                { date: '2023-10-04', reservation_count: 61, daily_revenue: 188673 },
+                { date: '2023-10-05', reservation_count: 49, daily_revenue: 151557 },
+                { date: '2023-10-06', reservation_count: 67, daily_revenue: 207231 },
+                { date: '2023-10-07', reservation_count: 72, daily_revenue: 222696 }
+            ],
+            lot_stats: [
+                { parking_lot: 'Downtown Premium Parking', reservation_count: 423, total_revenue: 1307709 },
+                { parking_lot: 'Mall Parking Complex', reservation_count: 387, total_revenue: 1196829 },
+                { parking_lot: 'Airport Express Parking', reservation_count: 298, total_revenue: 921654 },
+                { parking_lot: 'City Center Garage', reservation_count: 139, total_revenue: 429708 }
+            ],
+            status_distribution: [
+                { status: 'completed', count: 845 },
+                { status: 'active', count: 187 },
+                { status: 'cancelled', count: 215 }
+            ]
+        };
+
+        // Chart instances
+        let revenueChart, statusChart;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminData();
+            initializeDateFilters();
+            loadReportData();
+            
+            // Event listeners
+            document.getElementById('filterForm').addEventListener('submit', handleFilterSubmit);
+        });
+
+        // Load admin data
+        function loadAdminData() {
+            const admin = {
+                name: 'Administrator',
+                email: 'admin@parke.com',
+                role: 'Super Admin'
+            };
+            
+            document.getElementById('adminName').textContent = admin.name;
+        }
+
+        // Initialize date filters with current month
+        function initializeDateFilters() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+            document.getElementById('start_date').value = formatDateForInput(firstDay);
+            document.getElementById('end_date').value = formatDateForInput(lastDay);
+        }
+
+        // Handle filter form submission
+        function handleFilterSubmit(e) {
+            e.preventDefault();
+            loadReportData();
+        }
+
+        // Load and display report data
+        function loadReportData() {
+            // In a real application, you would fetch data based on the date filters
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+            
+            // For demo purposes, we'll use the mock data
+            updateStats(reportData.overall_stats);
+            updateCharts(reportData.revenue_data, reportData.status_distribution);
+            updateTables(reportData.lot_stats, reportData.revenue_data);
+        }
+
+        // Update statistics cards
+        function updateStats(stats) {
+            document.getElementById('totalReservations').textContent = stats.total_reservations.toLocaleString();
+            document.getElementById('totalRevenue').textContent = `UGX ${stats.total_revenue.toLocaleString()}`;
+            document.getElementById('avgRevenue').textContent = `UGX ${stats.avg_revenue_per_booking.toLocaleString()}`;
+            document.getElementById('uniqueDrivers').textContent = stats.unique_drivers.toLocaleString();
+        }
+
+        // Update charts
+        function updateCharts(revenueData, statusData) {
+            // Destroy existing charts if they exist
+            if (revenueChart) revenueChart.destroy();
+            if (statusChart) statusChart.destroy();
+            
+            // Revenue Trend Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: revenueData.map(day => formatDateForDisplay(day.date)),
+                    datasets: [{
+                        label: 'Daily Revenue (UGX)',
+                        data: revenueData.map(day => day.daily_revenue),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'UGX ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+            
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusData.map(status => status.status.charAt(0).toUpperCase() + status.status.slice(1)),
+                    datasets: [{
+                        data: statusData.map(status => status.count),
+                        backgroundColor: [
+                            '#10b981', // completed - green
+                            '#6366f1', // active - primary
+                            '#ef4444'  // cancelled - red
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update tables
+        function updateTables(lotStats, revenueData) {
+            // Parking Lot Performance Table
+            const lotPerformanceBody = document.getElementById('lotPerformanceBody');
+            lotPerformanceBody.innerHTML = lotStats.map(lot => `
+                <tr>
+                    <td>${lot.parking_lot}</td>
+                    <td>${lot.reservation_count.toLocaleString()}</td>
+                    <td>UGX ${lot.total_revenue.toLocaleString()}</td>
+                </tr>
+            `).join('');
+            
+            // Daily Revenue Table
+            const dailyRevenueBody = document.getElementById('dailyRevenueBody');
+            dailyRevenueBody.innerHTML = revenueData.map(day => `
+                <tr>
+                    <td>${formatDateForDisplay(day.date)}</td>
+                    <td>${day.reservation_count.toLocaleString()}</td>
+                    <td>UGX ${day.daily_revenue.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Export functions
+        function exportToCSV() {
+            alert('CSV export functionality would be implemented here. This would download a CSV file with all the report data.');
+            // In a real implementation, this would generate and download a CSV file
+        }
+
+        function exportToPDF() {
+            alert('PDF export functionality would be implemented here. This would generate a PDF report with charts and tables.');
+            // In a real implementation, this would generate and download a PDF file
+        }
+
+        // Utility functions
+        function formatDateForInput(date) {
+            if (typeof date === 'string') {
+                return date;
+            }
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDateForDisplay(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

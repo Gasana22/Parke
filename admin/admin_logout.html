@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging Out - Parke Smart Parking</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .logout-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logout-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            padding: 1rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 2s ease;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .logout-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logout-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .logout-icon {
+                font-size: 3rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <div class="logo">Park<span>e</span></div>
+        <div class="logout-icon">👋</div>
+        <h1>Logging You Out</h1>
+        <p>You are being securely logged out of your Parke account. Thank you for using our smart parking platform.</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn" onclick="cancelLogout()">Cancel Logout</button>
+            <button class="btn btn-secondary" onclick="logoutNow()">Logout Now</button>
+        </div>
+    </div>
+
+    <script>
+        let logoutTimer;
+        let progressInterval;
+        let progress = 0;
+        const logoutDelay = 5000; // 5 seconds
+
+        // Start the logout process
+        function startLogoutProcess() {
+            // Start progress bar animation
+            progressInterval = setInterval(() => {
+                progress += 1;
+                document.getElementById('progressFill').style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    performLogout();
+                }
+            }, logoutDelay / 100);
+            
+            // Set timer for automatic logout
+            logoutTimer = setTimeout(() => {
+                performLogout();
+            }, logoutDelay);
+        }
+
+        // Perform the actual logout
+        function performLogout() {
+            // Clear any existing timers
+            clearTimeout(logoutTimer);
+            clearInterval(progressInterval);
+            
+            // Remove user session from localStorage
+            localStorage.removeItem('currentUser');
+            
+            // Optional: Clear all stored data (uncomment if needed)
+            // localStorage.clear();
+            
+            // Show success message
+            document.querySelector('h1').textContent = 'Logged Out Successfully';
+            document.querySelector('p').textContent = 'You have been securely logged out. Redirecting to home page...';
+            document.querySelector('.logout-icon').textContent = '✅';
+            
+            // Redirect to home page after a short delay
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 1500);
+        }
+
+        // Cancel logout
+        function cancelLogout() {
+            clearTimeout(logoutTimer);
+            clearInterval(progressInterval);
+            
+            // Check if user was logged in
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser) {
+                // Redirect back to appropriate dashboard
+                if (currentUser.user_type === 'driver') {
+                    window.location.href = 'driver_dashboard.html';
+                } else {
+                    window.location.href = 'operator_dashboard.html';
+                }
+            } else {
+                // If no user session, go to home page
+                window.location.href = '/index.html';
+            }
+        }
+
+        // Immediate logout
+        function logoutNow() {
+            clearTimeout(logoutTimer);
+            clearInterval(progressInterval);
+            performLogout();
+        }
+
+        // Check if user is actually logged in
+        function checkLoginStatus() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                // If no user is logged in, redirect to home page
+                document.querySelector('h1').textContent = 'Not Logged In';
+                document.querySelector('p').textContent = 'No active session found. Redirecting to home page...';
+                document.querySelector('.logout-icon').textContent = '❌';
+                
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 2000);
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkLoginStatus()) {
+                startLogoutProcess();
+            }
+        });
+
+        // Handle browser back button
+        window.addEventListener('popstate', function(event) {
+            cancelLogout();
+        });
+
+        // Optional: Add keyboard shortcut for cancel (Escape key)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                cancelLogout();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Parke Smart Parking</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 2rem;
+        }
+
+        .user-type-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-type-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-type-btn.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .user-type-btn.driver.active {
+            color: var(--secondary);
+        }
+
+        .user-type-btn.operator.active {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-driver {
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-driver:hover {
+            background: #0da271;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-operator {
+            background: var(--accent);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-operator:hover {
+            background: #d97706;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--gray);
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-accounts {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .demo-accounts h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .demo-account {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .demo-account:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .demo-account:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-account strong {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                margin-top: 70px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .demo-accounts {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Park<span>e</span></a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your Parke account</p>
+        </div>
+
+        <div class="form-container">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="user-type-toggle">
+                <button class="user-type-btn driver active" onclick="setUserType('driver')">Driver</button>
+                <button class="user-type-btn operator" onclick="setUserType('operator')">Operator</button>
+            </div>
+
+            <form id="loginForm">
+                <input type="hidden" name="user_type" id="userType" value="driver">
+
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-driver" id="submitBtn">Sign In</button>
+            </form>
+
+            <div class="register-link">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+
+            <div class="demo-accounts">
+                <h3>Demo Accounts (Click to auto-fill)</h3>
+                
+                <div class="demo-account" onclick="fillDemoCredentials('driver', 'gasana', 'password123')">
+                    <strong>Driver Account</strong><br>
+                    Username: gasana<br>
+                    Password: password123
+                </div>
+                
+                <div class="demo-account" onclick="fillDemoCredentials('operator', 'gasana', 'password123')">
+                    <strong>Operator Account</strong><br>
+                    Username: gasana<br>
+                    Password: password123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set user type (driver or operator)
+        function setUserType(type) {
+            document.getElementById('userType').value = type;
+            
+            // Update active button
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.user-type-btn.${type}`).classList.add('active');
+            
+            // Update button style
+            if (type === 'driver') {
+                document.getElementById('submitBtn').className = 'btn btn-driver';
+            } else {
+                document.getElementById('submitBtn').className = 'btn btn-operator';
+            }
+        }
+
+        // Check if user exists and validate credentials
+        function authenticateUser(username, password, userType) {
+            const users = JSON.parse(localStorage.getItem(userType === 'driver' ? 'drivers' : 'operators')) || [];
+            
+            // Find user by username or email
+            const user = users.find(u => u.username === username || u.email === username);
+            
+            if (!user) {
+                return { success: false, error: `Invalid username or password for ${userType} account` };
+            }
+            
+            // Check password (using simple base64 encoding for demo)
+            // In the PHP version, this would use password_verify()
+            const storedPassword = atob(user.password); // Decode from base64
+            
+            if (password === storedPassword) {
+                return { 
+                    success: true, 
+                    user: {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email,
+                        user_type: userType,
+                        phone: user.phone || '',
+                        car_plate: user.car_plate || '',
+                        company_name: user.company_name || ''
+                    }
+                };
+            } else {
+                return { success: false, error: `Invalid username or password for ${userType} account` };
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            // Hide previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Validate required fields
+            if (!username || !password) {
+                showError('Username/email and password are required');
+                return;
+            }
+            
+            // Authenticate user
+            const authResult = authenticateUser(username, password, userType);
+            
+            if (authResult.success) {
+                // Store user session
+                localStorage.setItem('currentUser', JSON.stringify(authResult.user));
+                
+                showSuccess(`Welcome back, ${authResult.user.username}! Redirecting...`);
+                
+                // Redirect to appropriate dashboard
+                setTimeout(() => {
+                    if (userType === 'driver') {
+                        window.location.href = 'driver_dashboard.html';
+                    } else {
+                        window.location.href = 'operator_dashboard.html';
+                    }
+                }, 1500);
+                
+            } else {
+                showError(authResult.error);
+            }
+        });
+
+        // Fill demo credentials for testing
+        function fillDemoCredentials(userType, username, password) {
+            setUserType(userType);
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            
+            // Create demo accounts if they don't exist
+            createDemoAccounts();
+        }
+
+        // Create demo accounts for testing
+        function createDemoAccounts() {
+            // Initialize storage if not exists
+            if (!localStorage.getItem('drivers')) {
+                localStorage.setItem('drivers', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('operators')) {
+                localStorage.setItem('operators', JSON.stringify([]));
+            }
+            
+            const drivers = JSON.parse(localStorage.getItem('drivers'));
+            const operators = JSON.parse(localStorage.getItem('operators'));
+            
+            // Create demo driver if not exists
+            const demoDriverExists = drivers.some(d => d.username === 'gasana');
+            if (!demoDriverExists) {
+                drivers.push({
+                    id: 1001,
+                    username: 'gasana',
+                    email: 'gasana@gmail.com',
+                    password: btoa('password123'), // Base64 encode
+                    phone: '+1234567890',
+                    car_plate: 'ABC123',
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('drivers', JSON.stringify(drivers));
+            }
+            
+            // Create demo operator if not exists
+            const demoOperatorExists = operators.some(o => o.username === 'gasana');
+            if (!demoOperatorExists) {
+                operators.push({
+                    id: 2001,
+                    username: 'gasana',
+                    email: 'info@parkingco.com',
+                    password: btoa('password123'), // Base64 encode
+                    company_name: 'Premium Parking Co.',
+                    business_phone: '+1987654321',
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('operators', JSON.stringify(operators));
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Check if user is already logged in
+        function checkExistingSession() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                showSuccess(`Welcome back, ${currentUser.username}! Redirecting...`);
+                setTimeout(() => {
+                    if (currentUser.user_type === 'driver') {
+                        window.location.href = 'driver_dashboard.html';
+                    } else {
+                        window.location.href = 'operator_dashboard.html';
+                    }
+                }, 1000);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createDemoAccounts();
+            checkExistingSession();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analytics - Parke</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover, .nav-links a:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .filter-form h3 {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            padding: 1rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.8rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-card:nth-child(1)::before { background: var(--secondary); }
+        .stat-card:nth-child(2)::before { background: var(--accent); }
+        .stat-card:nth-child(3)::before { background: #2196F3; }
+        .stat-card:nth-child(4)::before { background: #9C27B0; }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card:nth-child(1) .stat-number { 
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(2) .stat-number { 
+            background: linear-gradient(135deg, var(--accent), #e68900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(3) .stat-number { 
+            background: linear-gradient(135deg, #2196F3, #0b79d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card:nth-child(4) .stat-number { 
+            background: linear-gradient(135deg, #9C27B0, #7b1fa2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .trend-chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .trend-day {
+            background: white;
+            padding: 1.5rem 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trend-day::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .trend-day:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .trend-revenue {
+            font-weight: 800;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .trend-bookings {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: var(--transition);
+        }
+
+        .data-table tr:hover td {
+            background: #f7fafc;
+            transform: scale(1.02);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .currency {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .trend-chart {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .trend-chart {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, <span id="username">Operator</span>! 🏢</h1>
+        <div class="nav-links">
+            <a href="operator_analytics.html">Analytics</a>
+            <a href="revenue_reports.html">Revenue Reports</a>
+            <a href="payment_management.html">Payments</a>
+            <a href="notification.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">1</span>
+            </a>
+            <a href="operator_settings.html">Settings</a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="filter-form">
+                <h3>📅 Analytics Period</h3>
+                <form id="analyticsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" id="start_date" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" id="end_date" name="end_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn">Update Analytics</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Performance Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card stat-revenue">
+                    <div class="stat-number" id="totalRevenue">UGX 0</div>
+                    <div>Total Revenue</div>
+                </div>
+                <div class="stat-card stat-bookings">
+                    <div class="stat-number" id="totalBookings">0</div>
+                    <div>Total Bookings</div>
+                </div>
+                <div class="stat-card stat-utilization">
+                    <div class="stat-number" id="utilizationRate">0%</div>
+                    <div>Utilization Rate</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="utilizationBar"></div>
+                    </div>
+                </div>
+                <div class="stat-card stat-customers">
+                    <div class="stat-number" id="avgBookingValue">UGX 0</div>
+                    <div>Avg. Booking Value</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📈 Revenue Trend (Last 7 Days)</h2>
+            <div class="trend-chart" id="revenueTrend">
+                <!-- Revenue trend data will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⏰ Peak Hours</h2>
+            <div class="chart-container" id="peakHoursContainer">
+                <!-- Peak hours data will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📅 Popular Days of Week</h2>
+            <div class="chart-container" id="popularDaysContainer">
+                <!-- Popular days data will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🏢 Parking Lot Performance</h2>
+            <table class="data-table" id="lotPerformanceTable">
+                <thead>
+                    <tr>
+                        <th>Parking Lot</th>
+                        <th>Utilization</th>
+                        <th>Bookings</th>
+                        <th>Revenue</th>
+                        <th>Avg. Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Parking lot data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Initialize analytics page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date range (last 30 days)
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
+            
+            document.getElementById('start_date').valueAsDate = startDate;
+            document.getElementById('end_date').valueAsDate = endDate;
+            
+            // Load operator data
+            loadOperatorData();
+            
+            // Load analytics data
+            loadAnalyticsData();
+            
+            // Set up form submission
+            document.getElementById('analyticsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                loadAnalyticsData();
+            });
+        });
+
+        // Load operator data
+        function loadOperatorData() {
+            // In a real application, you would fetch this data from an API
+            const operator = {
+                username: 'Operator',
+                email: 'operator@parke.com',
+                company: 'Premium Parking Solutions',
+                phone: '+1234567890',
+                memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+            };
+            
+            // Update operator information
+            document.getElementById('username').textContent = operator.username;
+        }
+
+        // Load analytics data
+        function loadAnalyticsData() {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+            
+            // In a real application, you would fetch this data from an API
+            // For this example, we'll use mock data
+            const mockData = generateMockAnalyticsData(startDate, endDate);
+            
+            // Update UI with data
+            updatePerformanceOverview(mockData.performance);
+            updateRevenueTrend(mockData.revenueTrend);
+            updatePeakHours(mockData.peakHours);
+            updatePopularDays(mockData.popularDays);
+            updateLotPerformance(mockData.lotPerformance);
+        }
+
+        // Generate mock analytics data
+        function generateMockAnalyticsData(startDate, endDate) {
+            // Mock performance data
+            const performance = {
+                totalRevenue: Math.floor(Math.random() * 5000000) + 1000000,
+                totalBookings: Math.floor(Math.random() * 500) + 100,
+                utilizationRate: Math.floor(Math.random() * 100),
+                avgBookingValue: Math.floor(Math.random() * 15000) + 5000
+            };
+            
+            // Mock revenue trend data (last 7 days)
+            const revenueTrend = [];
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                
+                revenueTrend.push({
+                    date: date.toISOString().split('T')[0],
+                    dailyRevenue: Math.floor(Math.random() * 500000) + 100000,
+                    dailyReservations: Math.floor(Math.random() * 50) + 10
+                });
+            }
+            
+            // Mock peak hours data
+            const peakHours = [];
+            const hours = [8, 9, 12, 13, 17, 18, 19, 20];
+            hours.forEach(hour => {
+                peakHours.push({
+                    hour: hour,
+                    reservationCount: Math.floor(Math.random() * 30) + 10,
+                    avgPrice: Math.floor(Math.random() * 10000) + 5000
+                });
+            });
+            
+            // Mock popular days data
+            const popularDays = [
+                { dayName: 'Monday', reservationCount: 45, totalRevenue: 450000 },
+                { dayName: 'Tuesday', reservationCount: 52, totalRevenue: 520000 },
+                { dayName: 'Wednesday', reservationCount: 48, totalRevenue: 480000 },
+                { dayName: 'Thursday', reservationCount: 55, totalRevenue: 550000 },
+                { dayName: 'Friday', reservationCount: 65, totalRevenue: 650000 },
+                { dayName: 'Saturday', reservationCount: 75, totalRevenue: 750000 },
+                { dayName: 'Sunday', reservationCount: 60, totalRevenue: 600000 }
+            ];
+            
+            // Mock parking lot performance data
+            const lotPerformance = [
+                {
+                    name: "Downtown Premium Parking",
+                    utilizationRate: 85,
+                    reservationCount: 120,
+                    totalRevenue: 1200000,
+                    avgRevenuePerBooking: 10000
+                },
+                {
+                    name: "Mall Parking Complex",
+                    utilizationRate: 72,
+                    reservationCount: 95,
+                    totalRevenue: 855000,
+                    avgRevenuePerBooking: 9000
+                },
+                {
+                    name: "Airport Express Parking",
+                    utilizationRate: 65,
+                    reservationCount: 80,
+                    totalRevenue: 800000,
+                    avgRevenuePerBooking: 10000
+                },
+                {
+                    name: "City Center Garage",
+                    utilizationRate: 58,
+                    reservationCount: 70,
+                    totalRevenue: 630000,
+                    avgRevenuePerBooking: 9000
+                }
+            ];
+            
+            return {
+                performance,
+                revenueTrend,
+                peakHours,
+                popularDays,
+                lotPerformance
+            };
+        }
+
+        // Update performance overview section
+        function updatePerformanceOverview(performance) {
+            document.getElementById('totalRevenue').textContent = `UGX ${performance.totalRevenue.toLocaleString()}`;
+            document.getElementById('totalBookings').textContent = performance.totalBookings;
+            document.getElementById('utilizationRate').textContent = `${performance.utilizationRate}%`;
+            document.getElementById('utilizationBar').style.width = `${performance.utilizationRate}%`;
+            document.getElementById('avgBookingValue').textContent = `UGX ${performance.avgBookingValue.toLocaleString()}`;
+        }
+
+        // Update revenue trend section
+        function updateRevenueTrend(revenueTrend) {
+            const container = document.getElementById('revenueTrend');
+            container.innerHTML = '';
+            
+            revenueTrend.forEach(day => {
+                const date = new Date(day.date);
+                const dayElement = document.createElement('div');
+                dayElement.className = 'trend-day';
+                dayElement.innerHTML = `
+                    <div style="font-size: 0.9rem; color: #666;">${date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                    <div class="trend-revenue">UGX ${day.dailyRevenue.toLocaleString()}</div>
+                    <div class="trend-bookings">${day.dailyReservations} bookings</div>
+                `;
+                container.appendChild(dayElement);
+            });
+        }
+
+        // Update peak hours section
+        function updatePeakHours(peakHours) {
+            const container = document.getElementById('peakHoursContainer');
+            
+            if (peakHours.length > 0) {
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        ${peakHours.map(hour => `
+                            <div style="text-align: center; background: white; padding: 1rem; border-radius: 5px; border: 1px solid #e0e0e0;">
+                                <div style="font-weight: bold; font-size: 1.2rem;">${String(hour.hour).padStart(2, '0')}:00</div>
+                                <div style="color: #4CAF50; font-weight: bold;">${hour.reservationCount} bookings</div>
+                                <div style="font-size: 0.8rem; color: #666;">Avg: UGX ${hour.avgPrice.toLocaleString()}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No peak hour data available for the selected period.</p>';
+            }
+        }
+
+        // Update popular days section
+        function updatePopularDays(popularDays) {
+            const container = document.getElementById('popularDaysContainer');
+            
+            if (popularDays.length > 0) {
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        ${popularDays.map(day => `
+                            <div style="background: white; padding: 1rem; border-radius: 5px; border: 1px solid #e0e0e0;">
+                                <div style="font-weight: bold; margin-bottom: 0.5rem;">${day.dayName}</div>
+                                <div style="color: #4CAF50; font-weight: bold;">${day.reservationCount} bookings</div>
+                                <div style="color: #666; font-size: 0.9rem;">UGX ${day.totalRevenue.toLocaleString()} revenue</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No day-wise data available for the selected period.</p>';
+            }
+        }
+
+        // Update parking lot performance section
+        function updateLotPerformance(lotPerformance) {
+            const tableBody = document.querySelector('#lotPerformanceTable tbody');
+            
+            tableBody.innerHTML = lotPerformance.map(lot => `
+                <tr>
+                    <td><strong>${lot.name}</strong></td>
+                    <td>
+                        ${lot.utilizationRate}%
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${lot.utilizationRate}%"></div>
+                        </div>
+                    </td>
+                    <td>${lot.reservationCount}</td>
+                    <td><strong class="currency">UGX ${lot.totalRevenue.toLocaleString()}</strong></td>
+                    <td class="currency">UGX ${lot.avgRevenuePerBooking.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

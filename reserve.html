@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Parking - Parke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+        }
+
+        .header:hover::before {
+            transform: translateX(100%);
+            transition: transform 0.8s ease;
+        }
+
+        .header h1 a {
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .header h1 a:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 5px;
+            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+        }
+
+        .reserve-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reserve-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .parking-info {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #4361ee;
+        }
+
+        .parking-info h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .info-item strong {
+            color: #2d3748;
+            min-width: 100px;
+        }
+
+        .reserve-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-select, .form-input {
+            padding: 1rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .slot-option {
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .price-summary {
+            background: linear-gradient(135deg, #f0fff4, #dcfce7);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            margin: 1rem 0;
+        }
+
+        .price-summary h4 {
+            color: #065f46;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .price-details {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            color: #047857;
+        }
+
+        .total-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #065f46;
+            border-top: 2px solid #a7f3d0;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .reserve-btn {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            color: white;
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+        }
+
+        .reserve-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .reserve-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4361ee;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #7209b7;
+            transform: translateX(-5px);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .reserve-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .reserve-title {
+                font-size: 1.8rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .slot-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .type-standard {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-premium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .type-disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <div class="nav-links">
+            <a href="find_parking.html">Find Parking</a>
+            <a href="my_reservations.html">My Reservations</a>
+            <a href="payment.html">Payment Methods</a>
+            <a href="notifications.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="reserve-container">
+        <h1 class="reserve-title">Reserve Your Parking Spot</h1>
+        
+        <div class="parking-info" id="parkingInfo">
+            <!-- Parking lot info will be loaded here -->
+        </div>
+
+        <form class="reserve-form" id="reservationForm">
+            <div class="form-group">
+                <label class="form-label">Select Parking Slot</label>
+                <select class="form-select" name="slot_id" id="slotSelect" required>
+                    <option value="">Choose a parking slot...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Duration (Hours)</label>
+                <input type="number" class="form-input" name="hours" id="hoursInput" 
+                       min="1" max="24" placeholder="Enter number of hours" required>
+            </div>
+
+            <div class="price-summary" id="priceSummary" style="display: none;">
+                <h4>Price Summary</h4>
+                <div class="price-details">
+                    <span>Price per hour:</span>
+                    <span id="pricePerHour">UGX 0</span>
+                    <span>Duration:</span>
+                    <span id="durationDisplay">0 hours</span>
+                    <div class="total-price">
+                        <span>Total:</span>
+                        <span id="totalPrice">UGX 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="reserve-btn" id="reserveBtn">
+                Reserve Parking Spot
+            </button>
+        </form>
+
+        <a href="find_parking.html" class="back-link">
+            ← Back to Find Parking
+        </a>
+    </div>
+
+    <script>
+        // Sample parking lot data
+        const parkingLots = {
+            1: {
+                name: "Downtown Premium Parking",
+                address: "123 Main Street, Downtown",
+                price_per_hour: 5000,
+                available_slots: [
+                    { id: 101, number: "A-01", type: "standard", features: "Near entrance" },
+                    { id: 102, number: "A-02", type: "premium", features: "Covered, CCTV" },
+                    { id: 103, number: "A-03", type: "standard", features: "Easy access" },
+                    { id: 104, number: "A-04", type: "premium", features: "Valet service" }
+                ]
+            },
+            2: {
+                name: "Mall Parking Complex",
+                address: "456 Shopping Avenue",
+                price_per_hour: 3000,
+                available_slots: [
+                    { id: 201, number: "B-01", type: "standard", features: "Ground floor" },
+                    { id: 202, number: "B-02", type: "standard", features: "Near elevator" },
+                    { id: 203, number: "B-03", type: "premium", features: "Covered, Security" }
+                ]
+            },
+            3: {
+                name: "Airport Express Parking",
+                address: "789 Airport Road",
+                price_per_hour: 8000,
+                available_slots: [
+                    { id: 301, number: "C-01", type: "premium", features: "Shuttle access" },
+                    { id: 302, number: "C-02", type: "premium", features: "24/7 Security" },
+                    { id: 303, number: "C-03", type: "standard", features: "Short walk to terminal" }
+                ]
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadParkingLotInfo();
+            updateNotificationBadge();
+            setupEventListeners();
+        });
+
+        // Load parking lot information from URL parameter
+        function loadParkingLotInfo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lotId = urlParams.get('lot_id');
+            
+            if (!lotId || !parkingLots[lotId]) {
+                showError('Invalid parking lot selected');
+                setTimeout(() => {
+                    window.location.href = 'find_parking.html';
+                }, 2000);
+                return;
+            }
+
+            const parkingLot = parkingLots[lotId];
+            
+            // Display parking lot info
+            document.getElementById('parkingInfo').innerHTML = `
+                <h3>${parkingLot.name}</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>📍 Address:</strong> ${parkingLot.address}
+                    </div>
+                    <div class="info-item">
+                        <strong>💰 Price:</strong> UGX ${parkingLot.price_per_hour.toLocaleString()}/hour
+                    </div>
+                    <div class="info-item">
+                        <strong>🅿️ Available:</strong> ${parkingLot.available_slots.length} slots
+                    </div>
+                </div>
+            `;
+
+            // Populate slot dropdown
+            const slotSelect = document.getElementById('slotSelect');
+            slotSelect.innerHTML = '<option value="">Choose a parking slot...</option>';
+            
+            parkingLot.available_slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot.id;
+                option.textContent = `Slot ${slot.number} (${slot.type})`;
+                option.dataset.type = slot.type;
+                option.dataset.features = slot.features;
+                slotSelect.appendChild(option);
+            });
+
+            // Store current parking lot info for calculations
+            window.currentParkingLot = parkingLot;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const hoursInput = document.getElementById('hoursInput');
+            const slotSelect = document.getElementById('slotSelect');
+            
+            hoursInput.addEventListener('input', updatePriceSummary);
+            slotSelect.addEventListener('change', updatePriceSummary);
+            
+            document.getElementById('reservationForm').addEventListener('submit', handleReservation);
+        }
+
+        // Update price summary based on selection
+        function updatePriceSummary() {
+            const hours = parseInt(document.getElementById('hoursInput').value);
+            const slotSelected = document.getElementById('slotSelect').value;
+            const priceSummary = document.getElementById('priceSummary');
+            
+            if (hours > 0 && slotSelected) {
+                const parkingLot = window.currentParkingLot;
+                const totalPrice = parkingLot.price_per_hour * hours;
+                
+                document.getElementById('pricePerHour').textContent = `UGX ${parkingLot.price_per_hour.toLocaleString()}`;
+                document.getElementById('durationDisplay').textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+                document.getElementById('totalPrice').textContent = `UGX ${totalPrice.toLocaleString()}`;
+                
+                priceSummary.style.display = 'block';
+            } else {
+                priceSummary.style.display = 'none';
+            }
+        }
+
+        // Handle reservation submission
+        function handleReservation(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const slotId = formData.get('slot_id');
+            const hours = parseInt(formData.get('hours'));
+            
+            if (!slotId || !hours) {
+                showError('Please select a slot and enter duration');
+                return;
+            }
+
+            // Show loading state
+            const reserveBtn = document.getElementById('reserveBtn');
+            reserveBtn.disabled = true;
+            reserveBtn.textContent = 'Processing Reservation...';
+            document.body.classList.add('loading');
+
+            // Simulate processing delay
+            setTimeout(() => {
+                createReservation(slotId, hours);
+            }, 1500);
+        }
+
+        // Create reservation in localStorage
+        function createReservation(slotId, hours) {
+            const parkingLot = window.currentParkingLot;
+            const slot = parkingLot.available_slots.find(s => s.id == slotId);
+            const totalPrice = parkingLot.price_per_hour * hours;
+            
+            const reservation = {
+                id: Date.now(),
+                parking_lot_id: getCurrentParkingLotId(),
+                parking_lot_name: parkingLot.name,
+                slot_id: slotId,
+                slot_number: slot.number,
+                slot_type: slot.type,
+                hours: hours,
+                total_price: totalPrice,
+                start_time: new Date().toISOString(),
+                end_time: new Date(Date.now() + hours * 60 * 60 * 1000).toISOString(),
+                status: 'active',
+                created_at: new Date().toISOString()
+            };
+
+            // Save reservation to localStorage
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            reservations.push(reservation);
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+
+            // Create notification
+            createReservationNotification(reservation);
+
+            // Show success message
+            showSuccess('Reservation created successfully!');
+
+            // Redirect to reservations page
+            setTimeout(() => {
+                window.location.href = 'my_reservations.html';
+            }, 2000);
+        }
+
+        // Get current parking lot ID from URL
+        function getCurrentParkingLotId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('lot_id');
+        }
+
+        // Create notification for reservation
+        function createReservationNotification(reservation) {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            
+            const notification = {
+                id: Date.now(),
+                title: "Reservation Confirmed",
+                message: `Your parking reservation at ${reservation.parking_lot_name} (Slot ${reservation.slot_number}) has been confirmed for ${reservation.hours} hour${reservation.hours > 1 ? 's' : ''}.`,
+                type: "reservation",
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                actions: [
+                    { label: "View Reservation", url: "my_reservations.html" },
+                    { label: "Get Directions", url: "find_parking.html" }
+                ]
+            };
+            
+            notifications.unshift(notification);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            showToast(message, '#10b981');
+        }
+
+        // Show error message
+        function showError(message) {
+            showToast(message, '#ef4444');
+        }
+
+        // Show toast message
+        function showToast(message, color = '#10b981') {
+            // Remove existing toast if any
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.background = color;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize reservations in localStorage if not exists
+        function initializeReservations() {
+            if (!localStorage.getItem('reservations')) {
+                localStorage.setItem('reservations', JSON.stringify([]));
+            }
+        }
+
+        // Call initialization
+        initializeReservations();
+    </script>
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - Parke</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dashboard-card h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dashboard-card > p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.8rem 1.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .action-card h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .action-card.reservations::before { background: #2196F3; }
+        .action-card.payment::before { background: #FF9800; }
+        .action-card.reviews::before { background: #9C27B0; }
+        .action-card.favorites::before { background: #E91E63; }
+        .action-card.history::before { background: #607D8B; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.8rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-card:nth-child(1)::before { background: var(--secondary); }
+        .stat-card:nth-child(2)::before { background: #2196F3; }
+        .stat-card:nth-child(3)::before { background: var(--danger); }
+        .stat-card:nth-child(4)::before { background: #FF9800; }
+        .stat-card:nth-child(5)::before { background: #9C27B0; }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card:nth-child(1) .stat-number { 
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+        }
+        .stat-card:nth-child(2) .stat-number { 
+            background: linear-gradient(135deg, #2196F3, #0b79d0);
+            -webkit-background-clip: text;
+        }
+        .stat-card:nth-child(3) .stat-number { 
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            -webkit-background-clip: text;
+        }
+        .stat-card:nth-child(4) .stat-number { 
+            background: linear-gradient(135deg, #FF9800, #f57c00);
+            -webkit-background-clip: text;
+        }
+        .stat-card:nth-child(5) .stat-number { 
+            background: linear-gradient(135deg, #9C27B0, #7b1fa2);
+            -webkit-background-clip: text;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-info {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .profile-info p {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .profile-info p:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .profile-info strong {
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .no-data {
+            text-align: center;
+            color: var(--gray);
+            font-style: italic;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-links .btn {
+            width: 100%;
+            text-align: center;
+            justify-content: flex-start;
+            padding: 14px 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .dashboard-card {
+                padding: 1.5rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .dashboard-card h2 {
+                font-size: 1.8rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, <span id="username">Driver</span>! 🚗</h1>
+        <div class="nav-links">
+            <a href="find_parking.html">Find Parking</a>
+            <a href="my_reservations.html">My Reservations</a>
+            <a href="payment.html">Payment Methods</a>
+            <a href="notifications.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="dashboard-card">
+                <h2>Driver Dashboard</h2>
+                <p>Welcome back! Here's your parking overview.</p>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeReservations">0</div>
+                        <div>Active Reservations</div>
+                    </div>
+                    <div class="stat-card total">
+                        <div class="stat-number" id="totalReservations">0</div>
+                        <div>Total Reservations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="unreadNotifications">0</div>
+                        <div>Unread Notifications</div>
+                    </div>
+                    <div class="stat-card spent">
+                        <div class="stat-number" id="totalSpent">UGX 0</div>
+                        <div>Total Spent</div>
+                    </div>
+                    <div class="stat-card rating">
+                        <div class="stat-number" id="driverRating">No ratings yet</div>
+                        <div>Your Reviews (<span id="reviewCount">0</span>)</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Quick Actions</h3>
+                <div class="quick-actions">
+                    <a href="find_parking.html" class="action-card">
+                        <h4>🔍 Find Parking</h4>
+                        <p>Search for available parking spots</p>
+                    </a>
+                    <a href="my_reservations.html" class="action-card reservations">
+                        <h4>📋 My Reservations</h4>
+                        <p>View and manage your bookings</p>
+                    </a>
+                    <a href="payment.html" class="action-card payment">
+                        <h4>💳 Payment Methods</h4>
+                        <p>Manage your payment options</p>
+                    </a>
+                    <a href="review.html" class="action-card reviews">
+                        <h4>⭐ Write Review</h4>
+                        <p>Share your parking experience</p>
+                    </a>
+                    <a href="favorites.html" class="action-card favorites">
+                        <h4>❤️ Favorites</h4>
+                        <p>Your favorite parking lots</p>
+                    </a>
+                    <a href="reservation_history.html" class="action-card history">
+                        <h4>📊 History</h4>
+                        <p>View past reservations</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <h3>Profile Info</h3>
+            <div class="profile-info">
+                <p><strong>Username:</strong> <span id="profileUsername">Driver</span></p>
+                <p><strong>Email:</strong> <span id="profileEmail">Not provided</span></p>
+                <p><strong>Phone:</strong> <span id="profilePhone">Not provided</span></p>
+                <p><strong>Car Plate:</strong> <span id="profileCarPlate">Not provided</span></p>
+                <div style="margin-top: 1rem;">
+                    <a href="edit_profile.html" class="btn btn-secondary" style="width: 100%;">Edit Profile</a>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 2rem;">Quick Links</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a href="find_parking.html" class="btn">🔍 Find Parking</a>
+                <a href="my_reservations.html" class="btn btn-secondary">📋 My Reservations</a>
+                <a href="notifications.html" class="btn btn-secondary">
+                    🔔 Notifications 
+                    (<span id="notificationCount">0</span> new)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            loadDashboardData();
+            setupActionCards();
+        });
+
+        // Initialize dashboard data
+        function initializeDashboard() {
+            // Initialize localStorage data if not exists
+            if (!localStorage.getItem('currentUser')) {
+                // Create default user data
+                const defaultUser = {
+                    username: 'Driver',
+                    email: 'driver@example.com',
+                    phone: '+1234567890',
+                    car_plate: 'ABC123'
+                };
+                localStorage.setItem('currentUser', JSON.stringify(defaultUser));
+            }
+
+            if (!localStorage.getItem('reservations')) {
+                localStorage.setItem('reservations', JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem('notifications')) {
+                localStorage.setItem('notifications', JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem('reviews')) {
+                localStorage.setItem('reviews', JSON.stringify([]));
+            }
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+
+            // Update profile information
+            document.getElementById('username').textContent = currentUser.username || 'Driver';
+            document.getElementById('profileUsername').textContent = currentUser.username || 'Driver';
+            document.getElementById('profileEmail').textContent = currentUser.email || 'Not provided';
+            document.getElementById('profilePhone').textContent = currentUser.phone || 'Not provided';
+            document.getElementById('profileCarPlate').textContent = currentUser.car_plate || 'Not provided';
+
+            // Calculate statistics
+            const activeReservations = reservations.filter(r => r.status === 'active').length;
+            const totalReservations = reservations.length;
+            const unreadNotifications = notifications.filter(n => !n.isRead).length;
+            const totalSpent = reservations
+                .filter(r => r.status === 'completed' || r.status === 'active')
+                .reduce((sum, r) => sum + (r.total_price || 0), 0);
+
+            // Calculate driver rating
+            const driverReviews = reviews.filter(r => r.user_id === currentUser.id);
+            const avgRating = driverReviews.length > 0 
+                ? (driverReviews.reduce((sum, r) => sum + r.rating, 0) / driverReviews.length).toFixed(1)
+                : 'No ratings yet';
+
+            // Update dashboard statistics
+            document.getElementById('activeReservations').textContent = activeReservations;
+            document.getElementById('totalReservations').textContent = totalReservations;
+            document.getElementById('unreadNotifications').textContent = unreadNotifications;
+            document.getElementById('notificationBadge').textContent = unreadNotifications;
+            document.getElementById('notificationCount').textContent = unreadNotifications;
+            document.getElementById('totalSpent').textContent = `UGX ${totalSpent.toLocaleString()}`;
+            
+            if (avgRating === 'No ratings yet') {
+                document.getElementById('driverRating').textContent = avgRating;
+            } else {
+                document.getElementById('driverRating').textContent = `${avgRating}⭐`;
+            }
+            document.getElementById('reviewCount').textContent = driverReviews.length;
+        }
+
+        // Setup action card animations
+        function setupActionCards() {
+            const actionCards = document.querySelectorAll('.action-card');
+            actionCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+
+                    // Navigate to the link
+                    const href = this.getAttribute('href');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 200);
+                });
+            });
+        }
+
+        // Add sample data for demonstration
+        function addSampleData() {
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+
+            // Add sample reservations if none exist
+            if (reservations.length === 0) {
+                const sampleReservations = [
+                    {
+                        id: 1,
+                        parking_lot_name: "Downtown Premium Parking",
+                        slot_number: "A-01",
+                        hours: 3,
+                        total_price: 15000,
+                        status: 'active',
+                        start_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+                        end_time: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        parking_lot_name: "Mall Parking Complex",
+                        slot_number: "B-02",
+                        hours: 2,
+                        total_price: 6000,
+                        status: 'completed',
+                        start_time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                        end_time: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
+                        created_at: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                localStorage.setItem('reservations', JSON.stringify(sampleReservations));
+            }
+
+            // Add sample notifications if none exist
+            if (notifications.length === 0) {
+                const sampleNotifications = [
+                    {
+                        id: 1,
+                        title: "Welcome to Parke!",
+                        message: "Thank you for joining our parking platform. Find your perfect parking spot!",
+                        type: "system",
+                        isRead: false,
+                        createdAt: new Date().toISOString(),
+                        actions: []
+                    },
+                    {
+                        id: 2,
+                        title: "Reservation Reminder",
+                        message: "Your parking reservation starts in 1 hour.",
+                        type: "alert",
+                        isRead: true,
+                        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                        actions: [
+                            { label: "View Reservation", url: "my_reservations.html" }
+                        ]
+                    }
+                ];
+                localStorage.setItem('notifications', JSON.stringify(sampleNotifications));
+            }
+
+            // Add sample reviews if none exist
+            if (reviews.length === 0) {
+                const sampleReviews = [
+                    {
+                        id: 1,
+                        parking_lot_name: "Mall Parking Complex",
+                        rating: 4.5,
+                        comment: "Great parking facility with good security.",
+                        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                localStorage.setItem('reviews', JSON.stringify(sampleReviews));
+            }
+        }
+
+        // Call sample data initialization
+        addSampleData();
+    </script>
+</body>
+</html>
