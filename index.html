@@ -827,7 +827,7 @@
                 
                 // Redirect to admin dashboard
                 setTimeout(() => {
-                    window.location.href = '/admin/admin_dashboard.html';
+                    window.location.href = './admin/admin_dashboard.html';
                 }, 1500);
                 
                 closeModal('adminLoginModal');
@@ -1038,11 +1038,11 @@
         function createDemoAccounts() {
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             
-            const demoDriverExists = users.some(u => u.username === 'demo_driver');
+            const demoDriverExists = users.some(u => u.username === 'driver');
             if (!demoDriverExists) {
                 users.push({
                     id: 1001,
-                    username: 'demo_driver',
+                    username: 'driver',
                     email: 'driver@demo.com',
                     password: btoa('password123'),
                     user_type: 'driver',
@@ -1052,11 +1052,11 @@
                 });
             }
             
-            const demoOperatorExists = users.some(u => u.username === 'demo_operator');
+            const demoOperatorExists = users.some(u => u.username === 'operator');
             if (!demoOperatorExists) {
                 users.push({
                     id: 2001,
-                    username: 'demo_operator',
+                    username: 'operator',
                     email: 'operator@demo.com',
                     password: btoa('password123'),
                     user_type: 'operator',
@@ -1099,7 +1099,7 @@
                 } else if (currentUser.user_type === 'operator') {
                     window.location.href = 'operator_dashboard.html';
                 } else if (currentUser.user_type === 'admin') {
-                    window.location.href = '/admin/admin_dashboard.html';
+                    window.location.href = './admin/admin_dashboard.html';
                 }
             }
         });
