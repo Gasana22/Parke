@@ -10,6 +10,8 @@
             --primary-dark: #4f46e5;
             --secondary: #10b981;
             --accent: #f59e0b;
+            --admin-purple: #8b5cf6;
+            --admin-purple-dark: #7c3aed;
             --dark: #1e293b;
             --light: #f8fafc;
             --gray: #64748b;
@@ -101,20 +103,26 @@
         }
 
         .admin-btn {
-            background: white;
+            background: linear-gradient(135deg, var(--admin-purple), var(--admin-purple-dark));
             color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: var(--transition);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .admin-btn:hover {
-            background: purple;
+            background: linear-gradient(135deg, var(--admin-purple-dark), #6d28d9);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
 
         .hero {
@@ -183,6 +191,15 @@
             border-top: 5px solid var(--accent);
         }
 
+        .auth-card.admin {
+            border-top: 5px solid var(--admin-purple);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .auth-card.admin:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
         .auth-icon {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
@@ -198,6 +215,10 @@
 
         .operator .auth-icon {
             color: var(--accent);
+        }
+
+        .admin .auth-icon {
+            color: var(--admin-purple);
         }
 
         .auth-card h2 {
@@ -255,6 +276,16 @@
         .btn-operator:hover {
             background: #d97706;
             box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-admin {
+            background: var(--admin-purple);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-admin:hover {
+            background: var(--admin-purple-dark);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
 
         .features {
@@ -506,6 +537,27 @@
             }
         }
 
+        .admin-credentials {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .admin-credentials h4 {
+            color: var(--admin-purple);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .admin-credentials p {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin: 0.25rem 0;
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.8rem;
@@ -564,7 +616,9 @@
         <a href="index.html" class="logo">Parke</a>
         <div class="nav-links">
             <a href="#features">Features</a>
-            <a href="/admin/admin_dashboard.html" class="admin-btn">Admin</a>
+            <button class="admin-btn" onclick="openAdminLogin()">
+                👑 Admin
+            </button>
         </div>
     </nav>
 
@@ -592,6 +646,14 @@
                     <p style="margin-top: 1rem; font-size: 0.9rem;">
                         New operator? <a href="#" onclick="openOperatorSignup()" style="color: #2196F3;">Sign up here</a>
                     </p>
+                </div>
+
+                <div class="auth-card admin">
+                    <div class="auth-icon">👑</div>
+                    <h2>System Admin</h2>
+                    <p>Manage the entire parking ecosystem, monitor performance, and configure system settings.</p>
+                    <button class="btn btn-admin" onclick="openAdminLogin()">Admin Login</button>
+                    
                 </div>
             </div>
         </div>
@@ -624,9 +686,34 @@
     </section>
 
     <footer class="footer">
-        <p>&copy; 2024 Parke. All rights reserved. | Smart Parking Platform</p>
+        <p>&copy; 2025 Parke. All rights reserved. | Smart Parking Platform</p>
     </footer>
 
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('adminLoginModal')">&times;</span>
+            <h2 style="color: var(--admin-purple);">👑 Admin Login</h2>
+            
+            
+            
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" name="username" required placeholder="Enter admin username">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" name="password" required placeholder="Enter admin password">
+                </div>
+                <button type="button" class="btn btn-admin" style="width: 100%;" onclick="handleAdminLogin()">Login to Admin Dashboard</button>
+            </form>
+            
+            
+        </div>
+    </div>
+
+    <!-- Existing Driver/Operator Modals -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('loginModal')">&times;</span>
@@ -713,7 +800,43 @@
     <script>
         let currentUserType = 'driver';
 
-        // Initialize localStorage data
+        // Admin Login Functions
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+        }
+
+        function handleAdminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (!username || !password) {
+                showToast('Please enter admin credentials', 'error');
+                return;
+            }
+
+            // Check admin credentials
+            if (username === 'gasana' && password === 'gasana') {
+                showToast('Welcome, Admin! Redirecting to dashboard...', 'success');
+                
+                // Store admin session
+                localStorage.setItem('currentUser', JSON.stringify({
+                    username: 'gasana',
+                    user_type: 'admin',
+                    role: 'Super Admin'
+                }));
+                
+                // Redirect to admin dashboard
+                setTimeout(() => {
+                    window.location.href = '/admin/admin_dashboard.html';
+                }, 1500);
+                
+                closeModal('adminLoginModal');
+            } else {
+                showToast('Invalid admin credentials. Use username: gasana, password: gasana', 'error');
+            }
+        }
+
+        // Existing functions (keep all your existing JavaScript code)
         function initializeData() {
             if (!localStorage.getItem('users')) {
                 localStorage.setItem('users', JSON.stringify([]));
@@ -814,7 +937,6 @@
                 return;
             }
 
-            // Check if user exists
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const user = users.find(u => 
                 (u.username === username || u.email === username) && 
@@ -823,12 +945,10 @@
             );
 
             if (user) {
-                // Store current user session
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 
                 showToast(`Welcome back, ${user.username}!`, 'success');
                 
-                // Redirect based on user type
                 setTimeout(() => {
                     if (userType === 'driver') {
                         window.location.href = 'driver_dashboard.html';
@@ -858,7 +978,6 @@
                 return;
             }
 
-            // Check if user already exists
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             const userExists = users.some(u => u.username === username || u.email === email);
             
@@ -867,12 +986,11 @@
                 return;
             }
 
-            // Create new user
             const newUser = {
                 id: Date.now(),
                 username: username,
                 email: email,
-                password: btoa(password), // Simple encoding for demo
+                password: btoa(password),
                 user_type: userType,
                 phone: phone || '',
                 car_plate: carPlate || '',
@@ -881,16 +999,12 @@
                 created_at: new Date().toISOString()
             };
 
-            // Save user
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
-            
-            // Store current user session
             localStorage.setItem('currentUser', JSON.stringify(newUser));
 
             showToast('Account created successfully!', 'success');
             
-            // Redirect based on user type
             setTimeout(() => {
                 if (userType === 'driver') {
                     window.location.href = 'driver_dashboard.html';
@@ -903,7 +1017,6 @@
         }
 
         function showToast(message, type = 'success') {
-            // Remove existing toast if any
             const existingToast = document.querySelector('.toast');
             if (existingToast) {
                 existingToast.remove();
@@ -922,17 +1035,15 @@
             }, 3000);
         }
 
-        // Add demo accounts for testing
         function createDemoAccounts() {
             const users = JSON.parse(localStorage.getItem('users') || '[]');
             
-            // Create demo driver if not exists
-            const demoDriverExists = users.some(u => u.username === 'gasana');
+            const demoDriverExists = users.some(u => u.username === 'demo_driver');
             if (!demoDriverExists) {
                 users.push({
                     id: 1001,
-                    username: 'gasana',
-                    email: 'gasana@you.com',
+                    username: 'demo_driver',
+                    email: 'driver@demo.com',
                     password: btoa('password123'),
                     user_type: 'driver',
                     phone: '+1234567890',
@@ -941,16 +1052,15 @@
                 });
             }
             
-            // Create demo operator if not exists
-            const demoOperatorExists = users.some(u => u.username === 'gasana');
+            const demoOperatorExists = users.some(u => u.username === 'demo_operator');
             if (!demoOperatorExists) {
                 users.push({
                     id: 2001,
-                    username: 'gasana',
-                    email: 'info@parkingco.com',
+                    username: 'demo_operator',
+                    email: 'operator@demo.com',
                     password: btoa('password123'),
                     user_type: 'operator',
-                    company_name: 'Premium Parking Co.',
+                    company_name: 'Demo Parking Co.',
                     business_phone: '+1987654321',
                     created_at: new Date().toISOString()
                 });
@@ -977,19 +1087,19 @@
             }
         });
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
             initializeData();
             createDemoAccounts();
             toggleFields('driver');
             
-            // Check if user is already logged in and redirect
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser) {
                 if (currentUser.user_type === 'driver') {
                     window.location.href = 'driver_dashboard.html';
-                } else {
+                } else if (currentUser.user_type === 'operator') {
                     window.location.href = 'operator_dashboard.html';
+                } else if (currentUser.user_type === 'admin') {
+                    window.location.href = '/admin/admin_dashboard.html';
                 }
             }
         });
