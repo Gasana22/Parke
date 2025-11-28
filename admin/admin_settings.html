@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Parke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Arial', sans-serif;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover, .nav-links a:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .alert {
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+            border-left-color: var(--secondary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .tab-navigation {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px 12px 0 0;
+            padding: 0 1rem;
+        }
+        
+        .tab-button {
+            padding: 1.25rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: var(--primary-dark);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .setting-description {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .password-weak {
+            color: var(--danger);
+        }
+        
+        .password-medium {
+            color: var(--accent);
+        }
+        
+        .password-strong {
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 1024px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .tab-navigation {
+                flex-direction: column;
+                padding: 0;
+            }
+            
+            .tab-button {
+                padding: 1rem;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, <span id="adminName">Admin</span>! 👑</h1>
+        <div class="nav-links">
+            <a href="admin_dashboard.html">📊 Dashboard</a>
+            <a href="admin_parking_lots.html">🅿️ Parking Lots</a>
+            <a href="admin_drivers.html">👥 Drivers</a>
+            <a href="admin_operators.html">🏢 Operators</a>
+            <a href="admin_reservations.html">📋 Reservations</a>
+            <a href="admin_reports.html">📈 Reports</a>
+            <a href="admin_settings.html" class="active">⚙️ Settings</a>
+            <a href="admin_logout.html" class="logout-btn">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>⚙️ System Settings</h1>
+        </div>
+        
+        <div id="alertMessage" class="alert alert-success" style="display: none;"></div>
+        
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="openTab('system-settings')">
+                ⚙️ System Settings
+            </button>
+            <button class="tab-button" onclick="openTab('profile-settings')">
+                👤 Profile Settings
+            </button>
+        </div>
+        
+        <div id="system-settings" class="tab-content active">
+            <div class="card">
+                <h2>System Configuration</h2>
+                <form id="systemSettingsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="system_name">System Name</label>
+                            <input type="text" id="system_name" name="system_name" class="form-control" 
+                                   value="Parke Parking System">
+                            <div class="setting-description">The name of your parking management system</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency" name="currency" class="form-control">
+                                <option value="UGX" selected>UGX - Ugandan Shilling</option>
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                            </select>
+                            <div class="setting-description">Default currency for pricing</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="timezone">Timezone</label>
+                            <select id="timezone" name="timezone" class="form-control">
+                                <option value="Africa/Kampala" selected>Africa/Kampala</option>
+                                <option value="UTC">UTC</option>
+                                <option value="Europe/London">Europe/London</option>
+                                <option value="America/New_York">America/New_York</option>
+                            </select>
+                            <div class="setting-description">System timezone</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="max_reservation_hours">Max Reservation Hours</label>
+                            <input type="number" id="max_reservation_hours" name="max_reservation_hours" class="form-control" 
+                                   value="24" min="1" max="168">
+                            <div class="setting-description">Maximum allowed reservation duration in hours</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cancellation_fee_percent">Cancellation Fee (%)</label>
+                            <input type="number" id="cancellation_fee_percent" name="cancellation_fee_percent" class="form-control" 
+                                   value="10" min="0" max="100" step="0.1">
+                            <div class="setting-description">Percentage charged for cancellations</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tax_rate_percent">Tax Rate (%)</label>
+                            <input type="number" id="tax_rate_percent" name="tax_rate_percent" class="form-control" 
+                                   value="18" min="0" max="100" step="0.1">
+                            <div class="setting-description">Tax rate applied to reservations</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="support_email">Support Email</label>
+                            <input type="email" id="support_email" name="support_email" class="form-control" 
+                                   value="support@parke.com">
+                            <div class="setting-description">Customer support email address</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="support_phone">Support Phone</label>
+                            <input type="tel" id="support_phone" name="support_phone" class="form-control" 
+                                   value="+256 700 000000">
+                            <div class="setting-description">Customer support phone number</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save System Settings</button>
+                </form>
+            </div>
+        </div>
+        
+        <div id="profile-settings" class="tab-content">
+            <div class="card">
+                <h2>Admin Profile</h2>
+                <form id="profileSettingsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" class="form-control" 
+                                   value="administrator" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" 
+                                   value="admin@parke.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control" 
+                               value="Administrator" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">New Password</label>
+                        <input type="password" id="password" name="password" class="form-control" 
+                               placeholder="Leave blank to keep current password">
+                        <div class="setting-description">Minimum 8 characters with letters and numbers</div>
+                        <div id="passwordStrength" class="password-strength"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" 
+                               placeholder="Confirm your new password">
+                        <div id="passwordMatch" class="setting-description"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminData();
+            
+            // Event listeners
+            document.getElementById('systemSettingsForm').addEventListener('submit', handleSystemSettingsSubmit);
+            document.getElementById('profileSettingsForm').addEventListener('submit', handleProfileSettingsSubmit);
+            document.getElementById('password').addEventListener('input', checkPasswordStrength);
+            document.getElementById('confirm_password').addEventListener('input', checkPasswordMatch);
+        });
+
+        // Load admin data
+        function loadAdminData() {
+            const admin = {
+                name: 'Administrator',
+                email: 'admin@parke.com',
+                role: 'Super Admin'
+            };
+            
+            document.getElementById('adminName').textContent = admin.name;
+        }
+
+        // Tab navigation
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Handle system settings form submission
+        function handleSystemSettingsSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const settings = Object.fromEntries(formData);
+            
+            // In a real application, you would send this data to a server
+            console.log('Saving system settings:', settings);
+            
+            showAlert('System settings updated successfully!', 'success');
+            
+            // Simulate saving to localStorage for demo
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+        }
+
+        // Handle profile settings form submission
+        function handleProfileSettingsSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const profileData = Object.fromEntries(formData);
+            
+            // Validate password
+            if (profileData.password && !validatePassword(profileData.password)) {
+                showAlert('Password must be at least 8 characters long and contain both letters and numbers', 'danger');
+                return;
+            }
+            
+            if (profileData.password && profileData.password !== profileData.confirm_password) {
+                showAlert('Passwords do not match', 'danger');
+                return;
+            }
+            
+            // In a real application, you would send this data to a server
+            console.log('Updating profile:', profileData);
+            
+            showAlert('Profile updated successfully!', 'success');
+            
+            // Update admin name in header
+            document.getElementById('adminName').textContent = profileData.full_name;
+            
+            // Clear password fields
+            document.getElementById('password').value = '';
+            document.getElementById('confirm_password').value = '';
+            document.getElementById('passwordStrength').textContent = '';
+            document.getElementById('passwordMatch').textContent = '';
+            
+            // Simulate saving to localStorage for demo
+            localStorage.setItem('adminProfile', JSON.stringify(profileData));
+        }
+
+        // Check password strength
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthElement = document.getElementById('passwordStrength');
+            
+            if (!password) {
+                strengthElement.textContent = '';
+                strengthElement.className = 'password-strength';
+                return;
+            }
+            
+            let strength = 0;
+            let feedback = '';
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            else feedback = 'Password should be at least 8 characters long. ';
+            
+            // Contains both letters and numbers
+            if (/[a-zA-Z]/.test(password) && /[0-9]/.test(password)) strength++;
+            else feedback += 'Include both letters and numbers. ';
+            
+            // Contains special characters
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            else feedback += 'Consider adding special characters for better security.';
+            
+            // Update UI
+            if (strength === 0) {
+                strengthElement.textContent = 'Very Weak';
+                strengthElement.className = 'password-strength password-weak';
+            } else if (strength === 1) {
+                strengthElement.textContent = 'Weak';
+                strengthElement.className = 'password-strength password-weak';
+            } else if (strength === 2) {
+                strengthElement.textContent = 'Medium';
+                strengthElement.className = 'password-strength password-medium';
+            } else {
+                strengthElement.textContent = 'Strong';
+                strengthElement.className = 'password-strength password-strong';
+                feedback = 'Good password!';
+            }
+            
+            strengthElement.textContent += ' - ' + feedback;
+        }
+
+        // Check password match
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const matchElement = document.getElementById('passwordMatch');
+            
+            if (!confirmPassword) {
+                matchElement.textContent = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchElement.textContent = 'Passwords match';
+                matchElement.style.color = 'var(--secondary)';
+            } else {
+                matchElement.textContent = 'Passwords do not match';
+                matchElement.style.color = 'var(--danger)';
+            }
+        }
+
+        // Validate password
+        function validatePassword(password) {
+            return password.length >= 8 && /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alertMessage');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            // Hide alert after 5 seconds
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Load saved settings from localStorage (for demo)
+        function loadSavedSettings() {
+            const savedSettings = localStorage.getItem('systemSettings');
+            const savedProfile = localStorage.getItem('adminProfile');
+            
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                Object.keys(settings).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) element.value = settings[key];
+                });
+            }
+            
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                Object.keys(profile).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element && key !== 'password' && key !== 'confirm_password') {
+                        element.value = profile[key];
+                    }
+                });
+                
+                // Update admin name in header
+                document.getElementById('adminName').textContent = profile.full_name || 'Administrator';
+            }
+        }
+
+        // Initialize with saved settings
+        loadSavedSettings();
+    </script>
+</body>
+</html>
