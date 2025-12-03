@@ -342,6 +342,11 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
+        .preview-item.fee {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
         .preview-item.total {
             border-bottom: none;
             border-top: 2px solid var(--primary);
@@ -446,6 +451,11 @@
             align-items: center;
             padding: 1rem 0;
             border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-row.fee {
+            color: var(--accent);
+            font-weight: 600;
         }
 
         .detail-row.total {
@@ -621,6 +631,157 @@
             font-size: 1.5rem;
         }
 
+        /* Transaction Success Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            animation: bounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        .modal-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .transaction-details {
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .transaction-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .transaction-row:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-row.fee {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .transaction-row.total {
+            border-top: 2px solid var(--secondary);
+            padding-top: 1rem;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .transaction-id {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--secondary);
+            margin: 1rem 0;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
         @media (max-width: 1024px) {
             .reservation-layout {
                 grid-template-columns: 1fr;
@@ -668,6 +829,15 @@
             .summary-card, .help-card {
                 padding: 1.5rem;
             }
+            
+            .modal-content {
+                padding: 2rem;
+                width: 95%;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -690,6 +860,16 @@
             .confirmation-card,
             .payment-method {
                 padding: 1.5rem;
+            }
+            
+            .modal-success-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+            
+            .modal-title {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -777,6 +957,10 @@
                                         <span>Duration:</span>
                                         <strong id="preview_duration">--</strong>
                                     </div>
+                                    <div class="preview-item fee">
+                                        <span>Parke Service Fee (10%):</span>
+                                        <strong id="preview_fee">--</strong>
+                                    </div>
                                     <div class="preview-item total">
                                         <span>Total Price:</span>
                                         <strong id="preview_total">--</strong>
@@ -818,6 +1002,10 @@
                                 <div class="detail-row">
                                     <span>Duration:</span>
                                     <strong id="confirm_duration">--</strong>
+                                </div>
+                                <div class="detail-row fee">
+                                    <span>Parke Service Fee (10%):</span>
+                                    <strong id="confirm_fee">--</strong>
                                 </div>
                                 <div class="detail-row total">
                                     <span>Total Amount:</span>
@@ -889,7 +1077,53 @@
                 <div class="help-card">
                     <h4>Need Help?</h4>
                     <p>Contact our support team at support@parke.com or call +256 700 000 000</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--accent);">
+                        <strong>Note:</strong> A 10% service fee is applied to all reservations.
+                    </p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Success Modal -->
+    <div class="modal" id="transactionSuccessModal">
+        <div class="modal-content">
+            <div class="modal-success-icon">✓</div>
+            <h2 class="modal-title">Transaction Successful!</h2>
+            <p class="modal-subtitle">Your parking reservation has been confirmed</p>
+            
+            <div class="transaction-details">
+                <div class="transaction-row">
+                    <span>Parking Lot:</span>
+                    <strong id="modal_lot_name">--</strong>
+                </div>
+                <div class="transaction-row">
+                    <span>Slot:</span>
+                    <strong id="modal_slot">--</strong>
+                </div>
+                <div class="transaction-row">
+                    <span>Duration:</span>
+                    <strong id="modal_duration">--</strong>
+                </div>
+                <div class="transaction-row">
+                    <span>Parking Fee:</span>
+                    <strong id="modal_parking_fee">--</strong>
+                </div>
+                <div class="transaction-row fee">
+                    <span>Parke Service Fee (10%):</span>
+                    <strong id="modal_service_fee">--</strong>
+                </div>
+                <div class="transaction-row total">
+                    <span>Total Paid:</span>
+                    <strong id="modal_total_paid">--</strong>
+                </div>
+            </div>
+            
+            <div class="transaction-id" id="transaction_id">TRX-1234567890</div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="printReceipt()">🖨️ Print Receipt</button>
+                <button class="btn btn-success" onclick="viewReservation()">📋 View Reservation</button>
             </div>
         </div>
     </div>
@@ -934,6 +1168,18 @@
             return parkingLots[lotId] ? lotId : 'downtown-premium';
         }
 
+        // Calculate service fee (10%)
+        function calculateServiceFee(baseAmount) {
+            const fee = baseAmount * 0.1;
+            return Math.round(fee);
+        }
+
+        // Calculate total with service fee
+        function calculateTotalWithFee(baseAmount) {
+            const fee = calculateServiceFee(baseAmount);
+            return baseAmount + fee;
+        }
+
         // Load user data
         document.addEventListener('DOMContentLoaded', function() {
             const user = JSON.parse(localStorage.getItem('loggedUser') || '{}');
@@ -952,6 +1198,13 @@
             
             // Setup reservation confirmation
             setupReservationConfirmation();
+            
+            // Setup modal close on outside click
+            document.getElementById('transactionSuccessModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeTransactionModal();
+                }
+            });
         });
 
         // Load parking lot data
@@ -1143,7 +1396,11 @@
                 document.getElementById('preview_end').textContent = formatDateTime(endDate);
                 document.getElementById('preview_duration').textContent = duration + ' hour' + (duration > 1 ? 's' : '');
                 
-                const totalPrice = parkingLot.pricePerHour * duration;
+                const basePrice = parkingLot.pricePerHour * duration;
+                const serviceFee = calculateServiceFee(basePrice);
+                const totalPrice = calculateTotalWithFee(basePrice);
+                
+                document.getElementById('preview_fee').textContent = 'UGX ' + serviceFee.toLocaleString();
                 document.getElementById('preview_total').textContent = 'UGX ' + totalPrice.toLocaleString();
             }
         }
@@ -1171,7 +1428,11 @@
                 document.getElementById('confirm_end').textContent = formatDateTime(endDate);
                 document.getElementById('confirm_duration').textContent = duration + ' hour' + (duration > 1 ? 's' : '');
                 
-                const totalPrice = parkingLot.pricePerHour * duration;
+                const basePrice = parkingLot.pricePerHour * duration;
+                const serviceFee = calculateServiceFee(basePrice);
+                const totalPrice = calculateTotalWithFee(basePrice);
+                
+                document.getElementById('confirm_fee').textContent = 'UGX ' + serviceFee.toLocaleString();
                 document.getElementById('confirm_total').textContent = 'UGX ' + totalPrice.toLocaleString();
             }
         }
@@ -1197,9 +1458,15 @@
                 return;
             }
             
+            // Calculate amounts
+            const basePrice = parkingLot.pricePerHour * duration;
+            const serviceFee = calculateServiceFee(basePrice);
+            const totalPrice = calculateTotalWithFee(basePrice);
+            
             // Create reservation object
             const reservation = {
                 id: 'res_' + Date.now(),
+                transactionId: 'TRX-' + Date.now().toString().slice(-10),
                 parkingLotId: lotId,
                 parkingLotName: parkingLot.name,
                 slotId: selectedSlot.value,
@@ -1207,7 +1474,9 @@
                 startTime: startTime,
                 duration: parseInt(duration),
                 endTime: new Date(startDate.getTime() + (duration * 60 * 60 * 1000)).toISOString(),
-                totalPrice: parkingLot.pricePerHour * duration,
+                basePrice: basePrice,
+                serviceFee: serviceFee,
+                totalPrice: totalPrice,
                 paymentMethod: paymentMethod,
                 status: 'active',
                 createdAt: new Date().toISOString(),
@@ -1237,12 +1506,122 @@
             const unreadCount = notifications.filter(n => !n.isRead).length;
             document.getElementById('notificationBadge').textContent = unreadCount;
             
-            // Show success and redirect
-            showSuccess('Reservation confirmed successfully! Redirecting to dashboard...');
+            // Show transaction success modal
+            showTransactionSuccessModal(reservation);
+        }
+
+        // Show transaction success modal
+        function showTransactionSuccessModal(reservation) {
+            // Update modal content
+            document.getElementById('modal_lot_name').textContent = reservation.parkingLotName;
+            document.getElementById('modal_slot').textContent = reservation.slotNumber;
+            document.getElementById('modal_duration').textContent = reservation.duration + ' hour' + (reservation.duration > 1 ? 's' : '');
+            document.getElementById('modal_parking_fee').textContent = 'UGX ' + reservation.basePrice.toLocaleString();
+            document.getElementById('modal_service_fee').textContent = 'UGX ' + reservation.serviceFee.toLocaleString();
+            document.getElementById('modal_total_paid').textContent = 'UGX ' + reservation.totalPrice.toLocaleString();
+            document.getElementById('transaction_id').textContent = reservation.transactionId;
             
+            // Show modal
+            const modal = document.getElementById('transactionSuccessModal');
+            modal.style.display = 'flex';
+            
+            // Disable body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close transaction modal
+        function closeTransactionModal() {
+            const modal = document.getElementById('transactionSuccessModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // View reservation details
+        function viewReservation() {
+            closeTransactionModal();
+            // Navigate to reservations page
+            window.location.href = 'my_reservations.html';
+        }
+
+        // Print receipt
+        function printReceipt() {
+            const receiptContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Parke Receipt</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .receipt { max-width: 400px; margin: 0 auto; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                        .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
+                        .details { margin: 20px 0; }
+                        .row { display: flex; justify-content: space-between; margin: 10px 0; }
+                        .total { border-top: 2px solid #000; padding-top: 10px; font-weight: bold; }
+                        .thank-you { text-align: center; margin-top: 30px; font-style: italic; }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt">
+                        <div class="header">
+                            <div class="logo">P A R K E</div>
+                            <div>Parking Receipt</div>
+                        </div>
+                        <div class="details">
+                            <div class="row">
+                                <span>Transaction ID:</span>
+                                <span>${document.getElementById('transaction_id').textContent}</span>
+                            </div>
+                            <div class="row">
+                                <span>Date:</span>
+                                <span>${new Date().toLocaleDateString()}</span>
+                            </div>
+                            <div class="row">
+                                <span>Time:</span>
+                                <span>${new Date().toLocaleTimeString()}</span>
+                            </div>
+                            <div class="row">
+                                <span>Parking Lot:</span>
+                                <span>${document.getElementById('modal_lot_name').textContent}</span>
+                            </div>
+                            <div class="row">
+                                <span>Slot:</span>
+                                <span>${document.getElementById('modal_slot').textContent}</span>
+                            </div>
+                            <div class="row">
+                                <span>Duration:</span>
+                                <span>${document.getElementById('modal_duration').textContent}</span>
+                            </div>
+                            <div class="row">
+                                <span>Parking Fee:</span>
+                                <span>${document.getElementById('modal_parking_fee').textContent}</span>
+                            </div>
+                            <div class="row">
+                                <span>Service Fee (10%):</span>
+                                <span>${document.getElementById('modal_service_fee').textContent}</span>
+                            </div>
+                            <div class="row total">
+                                <span>Total Paid:</span>
+                                <span>${document.getElementById('modal_total_paid').textContent}</span>
+                            </div>
+                        </div>
+                        <div class="thank-you">
+                            Thank you for choosing Parke!<br>
+                            Visit us again soon.
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(receiptContent);
+            printWindow.document.close();
+            printWindow.focus();
             setTimeout(() => {
-                window.location.href = 'reservation_success.html?id=' + reservation.id;
-            }, 2000);
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         }
 
         // Show error message
@@ -1257,30 +1636,6 @@
             // Hide after 5 seconds
             setTimeout(() => {
                 errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        // Show success message
-        function showSuccess(message) {
-            // Create success message element
-            const successDiv = document.createElement('div');
-            successDiv.className = 'alert-success';
-            successDiv.textContent = message;
-            successDiv.style.marginBottom = '2rem';
-            successDiv.style.animation = 'slideIn 0.5s ease';
-            
-            // Insert at top of form section
-            const formSection = document.querySelector('.reservation-form-section');
-            const form = document.getElementById('reservationForm');
-            formSection.insertBefore(successDiv, form);
-            
-            // Remove after 5 seconds
-            setTimeout(() => {
-                successDiv.style.opacity = '0';
-                successDiv.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    successDiv.remove();
-                }, 500);
             }, 5000);
         }
 
