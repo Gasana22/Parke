@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Parking - Parke</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb {
+            margin-bottom: 2rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .reservation-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .reservation-form-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-step {
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-step h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-step h2::before {
+            font-size: 1.5rem;
+        }
+
+        #step1 h2::before { content: '1️⃣'; }
+        #step2 h2::before { content: '2️⃣'; }
+        #step3 h2::before { content: '3️⃣'; }
+
+        .slots-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .slot-option input[type="radio"] {
+            display: none;
+        }
+
+        .slot-option label {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot-option label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .slot-option input[type="radio"]:checked + label {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .slot-option input[type="radio"]:checked + label::before {
+            opacity: 1;
+        }
+
+        .slot-icon {
+            font-size: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .slot-option input[type="radio"]:checked + label .slot-icon {
+            transform: scale(1.1);
+        }
+
+        .slot-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .slot-details strong {
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .slot-details span {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .time-selection {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .time-preview {
+            background: linear-gradient(135deg, #f0f4ff, #ffffff);
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .time-preview h4 {
+            margin: 0 0 1.5rem 0;
+            color: var(--dark);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-preview h4::before {
+            content: '📅';
+        }
+
+        .preview-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .preview-item.total {
+            border-bottom: none;
+            border-top: 2px solid var(--primary);
+            padding-top: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .confirmation-details {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .confirmation-card {
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 6px solid var(--secondary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .confirmation-card h3 {
+            margin: 0 0 1.5rem 0;
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .confirmation-card h3::before {
+            content: '✅';
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-row.total {
+            border-bottom: none;
+            border-top: 2px solid var(--secondary);
+            font-size: 1.3rem;
+            color: var(--secondary);
+            font-weight: 700;
+            padding-top: 1.5rem;
+        }
+
+        .payment-method {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid #f1f5f9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .payment-method h3 {
+            margin: 0 0 1rem 0;
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .payment-options {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .payment-option input[type="radio"]:checked + label {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+        }
+
+        .reservation-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .summary-card, .help-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .summary-card h3, .help-card h4 {
+            margin: 0 0 1.5rem 0;
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .summary-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .price-info {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f0f4ff, #ffffff);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-unit {
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .availability {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .available-count {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .amenities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .amenity-tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            border-left: 4px solid white;
+            font-weight: 600;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            border-left: 4px solid white;
+        }
+
+        .alert-warning h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .reservation-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .reservation-form-section {
+                padding: 1.5rem;
+            }
+            
+            .slots-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-actions {
+                flex-direction: column;
+            }
+            
+            .step-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .summary-card, .help-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .breadcrumb {
+                font-size: 0.85rem;
+            }
+            
+            .slot-option label {
+                padding: 1rem;
+            }
+            
+            .slot-icon {
+                font-size: 2rem;
+            }
+            
+            .time-preview {
+                padding: 1.5rem;
+            }
+            
+            .confirmation-card,
+            .payment-method {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Driver Dashboard Header -->
+    <div class="header">
+        <h1>Reserve Parking, <span id="username">Driver</span>! 🚗</h1>
+        <div class="nav-links">
+            <a href="driver_dashboard.html">Dashboard</a>
+            <a href="find_parking.html">Find Parking</a>
+            <a href="my_reservations.html">My Reservations</a>
+            <a href="payment.html">Payment Methods</a>
+            <a href="notifications.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">3</span>
+            </a>
+            <a href="index.html">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="find_parking.html">Find Parking</a> &gt; 
+            <a href="parking_details.html">Downtown Premium Parking</a> &gt; 
+            <span>Reserve</span>
+        </div>
+
+        <div class="reservation-layout">
+            <div class="reservation-form-section">
+                <h1>Reserve Parking at Downtown Premium Parking</h1>
+                
+                <div class="alert-error" id="errorMessage" style="display: none;"></div>
+                
+                <div class="alert-warning" id="noSlotsWarning" style="display: none;">
+                    <h3>❌ No Available Slots</h3>
+                    <p>There are currently no available parking slots at this location.</p>
+                    <a href="find_parking.html" class="btn">Find Other Parking</a>
+                </div>
+                
+                <form method="POST" class="reservation-form" id="reservationForm">
+                    <div class="form-step active" id="step1">
+                        <h2>1. Select Parking Slot</h2>
+                        <div class="slots-selection" id="slotsContainer">
+                            <!-- Slots will be populated by JavaScript -->
+                        </div>
+                        <button type="button" class="btn btn-large next-step" data-next="step2">Next: Select Time</button>
+                    </div>
+
+                    <div class="form-step" id="step2">
+                        <h2>2. Select Time & Duration</h2>
+                        <div class="time-selection">
+                            <div class="form-group">
+                                <label>Start Time</label>
+                                <input type="datetime-local" name="start_time" id="start_time" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <select name="duration" id="duration" required>
+                                    <option value="1">1 hour</option>
+                                    <option value="2">2 hours</option>
+                                    <option value="3">3 hours</option>
+                                    <option value="4">4 hours</option>
+                                    <option value="6">6 hours</option>
+                                    <option value="8">8 hours</option>
+                                    <option value="12">12 hours</option>
+                                    <option value="24">24 hours</option>
+                                </select>
+                            </div>
+                            
+                            <div class="time-preview">
+                                <h4>Reservation Summary:</h4>
+                                <div class="preview-details">
+                                    <div class="preview-item">
+                                        <span>Start:</span>
+                                        <strong id="preview_start">--</strong>
+                                    </div>
+                                    <div class="preview-item">
+                                        <span>End:</span>
+                                        <strong id="preview_end">--</strong>
+                                    </div>
+                                    <div class="preview-item">
+                                        <span>Duration:</span>
+                                        <strong id="preview_duration">--</strong>
+                                    </div>
+                                    <div class="preview-item total">
+                                        <span>Total Price:</span>
+                                        <strong id="preview_total">--</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-actions">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="step1">← Back</button>
+                            <button type="button" class="btn btn-large next-step" data-next="step3">Next: Confirm</button>
+                        </div>
+                    </div>
+
+                    <div class="form-step" id="step3">
+                        <h2>3. Confirm Reservation</h2>
+                        <div class="confirmation-details">
+                            <div class="confirmation-card">
+                                <h3>Reservation Details</h3>
+                                <div class="detail-row">
+                                    <span>Parking Lot:</span>
+                                    <strong id="confirm_lot">Downtown Premium Parking</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Address:</span>
+                                    <span id="confirm_address">123 Main Street, Downtown</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Selected Slot:</span>
+                                    <strong id="confirm_slot">--</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Start Time:</span>
+                                    <strong id="confirm_start">--</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>End Time:</span>
+                                    <strong id="confirm_end">--</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Duration:</span>
+                                    <strong id="confirm_duration">--</strong>
+                                </div>
+                                <div class="detail-row total">
+                                    <span>Total Amount:</span>
+                                    <strong id="confirm_total">--</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <h3>Payment Method</h3>
+                                <p>Payment will be processed after you complete your parking session.</p>
+                                <div class="payment-options">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="card" id="payment_card" checked>
+                                        <label for="payment_card">
+                                            <span class="payment-icon">💳</span>
+                                            <span>Credit/Debit Card</span>
+                                        </label>
+                                    </div>
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="wallet" id="payment_wallet">
+                                        <label for="payment_wallet">
+                                            <span class="payment-icon">👛</span>
+                                            <span>Parke Wallet</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-actions">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="step2">← Back</button>
+                            <button type="submit" name="reserve_slot" class="btn btn-large btn-success" id="confirmReservationBtn">✅ Confirm & Reserve</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="reservation-summary">
+                <div class="summary-card">
+                    <h3>Parking Lot Info</h3>
+                    <div class="summary-details">
+                        <div class="summary-item">
+                            <strong id="lot_name">Downtown Premium Parking</strong>
+                            <p class="address">📍 <span id="lot_address">123 Main Street, Downtown</span></p>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <div class="price-info">
+                                <span class="price" id="lot_price">UGX 5,000</span>
+                                <span class="price-unit">per hour</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <div class="availability">
+                                <span class="available-count" id="available_slots">6</span>
+                                <span>slots available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <h4>Amenities:</h4>
+                            <div class="amenities-list" id="amenities_list">
+                                <!-- Amenities will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-card">
+                    <h4>Need Help?</h4>
+                    <p>Contact our support team at support@parke.com or call +256 700 000 000</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample parking lot data
+        const parkingLots = {
+            'downtown-premium': {
+                id: 'downtown-premium',
+                name: 'Downtown Premium Parking',
+                address: '123 Main Street, Downtown',
+                pricePerHour: 5000,
+                availableSlots: 6,
+                amenities: ['Security Cameras', '24/7 Access', 'EV Charging', 'Covered Parking', 'Car Wash', 'Valet Service'],
+                slots: [
+                    { id: 'slot_1', number: 'A-01', type: 'standard', icon: '🚗' },
+                    { id: 'slot_2', number: 'A-02', type: 'disabled', icon: '♿' },
+                    { id: 'slot_3', number: 'A-03', type: 'large', icon: '🚙' },
+                    { id: 'slot_4', number: 'B-01', type: 'standard', icon: '🚗' },
+                    { id: 'slot_5', number: 'B-02', type: 'standard', icon: '🚗' },
+                    { id: 'slot_6', number: 'B-03', type: 'large', icon: '🚙' }
+                ]
+            },
+            'mall-parking': {
+                id: 'mall-parking',
+                name: 'Mall Parking Complex',
+                address: '456 Mall Road, Shopping District',
+                pricePerHour: 3000,
+                availableSlots: 12,
+                amenities: ['Security Guard', 'Shopping Discount', 'Food Court Access'],
+                slots: [
+                    { id: 'slot_m1', number: 'M-01', type: 'standard', icon: '🚗' },
+                    { id: 'slot_m2', number: 'M-02', type: 'standard', icon: '🚗' }
+                ]
+            }
+        };
+
+        // Get parking lot ID from URL or use default
+        function getParkingLotIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lotId = urlParams.get('lot_id') || 'downtown-premium';
+            return parkingLots[lotId] ? lotId : 'downtown-premium';
+        }
+
+        // Load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+            if (user) {
+                document.getElementById('username').textContent = user.fullName || user.username || 'Driver';
+            }
+            
+            // Load parking lot data
+            loadParkingLotData();
+            
+            // Setup form navigation
+            setupFormNavigation();
+            
+            // Setup time and price updates
+            setupTimeAndPriceUpdates();
+            
+            // Setup reservation confirmation
+            setupReservationConfirmation();
+        });
+
+        // Load parking lot data
+        function loadParkingLotData() {
+            const lotId = getParkingLotIdFromURL();
+            const parkingLot = parkingLots[lotId];
+            
+            if (!parkingLot) {
+                showError('Parking lot not found.');
+                return;
+            }
+            
+            // Update page title and headers
+            document.title = `Reserve Parking - ${parkingLot.name}`;
+            document.querySelector('h1').textContent = `Reserve Parking at ${parkingLot.name}`;
+            document.getElementById('confirm_lot').textContent = parkingLot.name;
+            document.getElementById('confirm_address').textContent = parkingLot.address;
+            document.getElementById('lot_name').textContent = parkingLot.name;
+            document.getElementById('lot_address').textContent = parkingLot.address;
+            document.getElementById('lot_price').textContent = `UGX ${parkingLot.pricePerHour.toLocaleString()}`;
+            document.getElementById('available_slots').textContent = parkingLot.availableSlots;
+            
+            // Update amenities
+            const amenitiesList = document.getElementById('amenities_list');
+            amenitiesList.innerHTML = '';
+            parkingLot.amenities.slice(0, 3).forEach(amenity => {
+                const tag = document.createElement('span');
+                tag.className = 'amenity-tag';
+                tag.textContent = amenity;
+                amenitiesList.appendChild(tag);
+            });
+            
+            if (parkingLot.amenities.length > 3) {
+                const moreTag = document.createElement('span');
+                moreTag.className = 'amenity-tag';
+                moreTag.textContent = `+${parkingLot.amenities.length - 3} more`;
+                amenitiesList.appendChild(moreTag);
+            }
+            
+            // Update slots selection
+            if (parkingLot.slots.length === 0) {
+                document.getElementById('noSlotsWarning').style.display = 'block';
+                document.getElementById('reservationForm').style.display = 'none';
+            } else {
+                const slotsContainer = document.getElementById('slotsContainer');
+                slotsContainer.innerHTML = '';
+                
+                parkingLot.slots.forEach(slot => {
+                    const slotOption = document.createElement('div');
+                    slotOption.className = 'slot-option';
+                    
+                    const slotId = `slot_${slot.id}`;
+                    
+                    slotOption.innerHTML = `
+                        <input type="radio" name="slot_id" value="${slot.id}" id="${slotId}" required>
+                        <label for="${slotId}">
+                            <div class="slot-icon">${slot.icon}</div>
+                            <div class="slot-details">
+                                <strong>Slot ${slot.number}</strong>
+                                <span>${slot.type.charAt(0).toUpperCase() + slot.type.slice(1)}</span>
+                            </div>
+                        </label>
+                    `;
+                    
+                    slotsContainer.appendChild(slotOption);
+                });
+            }
+            
+            // Set default start time (30 minutes from now)
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            const startTimeInput = document.getElementById('start_time');
+            startTimeInput.min = new Date().toISOString().slice(0, 16);
+            startTimeInput.value = now.toISOString().slice(0, 16);
+            
+            // Trigger initial updates
+            updatePriceAndTime();
+            updateConfirmation();
+        }
+
+        // Setup form navigation
+        function setupFormNavigation() {
+            const nextButtons = document.querySelectorAll('.next-step');
+            const prevButtons = document.querySelectorAll('.prev-step');
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = this.closest('.form-step');
+                    const nextStepId = this.getAttribute('data-next');
+                    const nextStep = document.getElementById(nextStepId);
+                    
+                    if (validateStep(currentStep.id)) {
+                        currentStep.classList.remove('active');
+                        nextStep.classList.add('active');
+                        updateConfirmation();
+                        
+                        // Scroll to top of step
+                        nextStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = this.closest('.form-step');
+                    const prevStepId = this.getAttribute('data-prev');
+                    const prevStep = document.getElementById(prevStepId);
+                    
+                    currentStep.classList.remove('active');
+                    prevStep.classList.add('active');
+                    
+                    // Scroll to top of step
+                    prevStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        }
+
+        // Setup time and price updates
+        function setupTimeAndPriceUpdates() {
+            const durationSelect = document.getElementById('duration');
+            const startTimeInput = document.getElementById('start_time');
+            
+            if (durationSelect && startTimeInput) {
+                durationSelect.addEventListener('change', updatePriceAndTime);
+                startTimeInput.addEventListener('change', updatePriceAndTime);
+            }
+            
+            const slotInputs = document.querySelectorAll('input[name="slot_id"]');
+            slotInputs.forEach(input => {
+                input.addEventListener('change', updateConfirmation);
+            });
+        }
+
+        // Setup reservation confirmation
+        function setupReservationConfirmation() {
+            const confirmBtn = document.getElementById('confirmReservationBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    processReservation();
+                });
+            }
+        }
+
+        // Validate current step
+        function validateStep(stepId) {
+            switch(stepId) {
+                case 'step1':
+                    const selectedSlot = document.querySelector('input[name="slot_id"]:checked');
+                    if (!selectedSlot) {
+                        showError('Please select a parking slot.');
+                        return false;
+                    }
+                    return true;
+                    
+                case 'step2':
+                    const startTime = document.getElementById('start_time').value;
+                    const duration = document.getElementById('duration').value;
+                    
+                    if (!startTime) {
+                        showError('Please select a start time.');
+                        return false;
+                    }
+                    
+                    if (!duration) {
+                        showError('Please select a duration.');
+                        return false;
+                    }
+                    
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // Update price and time preview
+        function updatePriceAndTime() {
+            const startTime = document.getElementById('start_time').value;
+            const duration = document.getElementById('duration').value;
+            const lotId = getParkingLotIdFromURL();
+            const parkingLot = parkingLots[lotId];
+            
+            if (startTime && duration && parkingLot) {
+                const startDate = new Date(startTime);
+                const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
+                
+                document.getElementById('preview_start').textContent = formatDateTime(startDate);
+                document.getElementById('preview_end').textContent = formatDateTime(endDate);
+                document.getElementById('preview_duration').textContent = duration + ' hour' + (duration > 1 ? 's' : '');
+                
+                const totalPrice = parkingLot.pricePerHour * duration;
+                document.getElementById('preview_total').textContent = 'UGX ' + totalPrice.toLocaleString();
+            }
+        }
+
+        // Update confirmation details
+        function updateConfirmation() {
+            const selectedSlot = document.querySelector('input[name="slot_id"]:checked');
+            if (selectedSlot) {
+                const slotLabel = selectedSlot.nextElementSibling;
+                const slotNumber = slotLabel.querySelector('strong').textContent;
+                const slotType = slotLabel.querySelector('span').textContent;
+                document.getElementById('confirm_slot').textContent = slotNumber + ' (' + slotType + ')';
+            }
+            
+            const startTime = document.getElementById('start_time').value;
+            const duration = document.getElementById('duration').value;
+            const lotId = getParkingLotIdFromURL();
+            const parkingLot = parkingLots[lotId];
+            
+            if (startTime && duration && parkingLot) {
+                const startDate = new Date(startTime);
+                const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
+                
+                document.getElementById('confirm_start').textContent = formatDateTime(startDate);
+                document.getElementById('confirm_end').textContent = formatDateTime(endDate);
+                document.getElementById('confirm_duration').textContent = duration + ' hour' + (duration > 1 ? 's' : '');
+                
+                const totalPrice = parkingLot.pricePerHour * duration;
+                document.getElementById('confirm_total').textContent = 'UGX ' + totalPrice.toLocaleString();
+            }
+        }
+
+        // Process reservation
+        function processReservation() {
+            const selectedSlot = document.querySelector('input[name="slot_id"]:checked');
+            const startTime = document.getElementById('start_time').value;
+            const duration = document.getElementById('duration').value;
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            const lotId = getParkingLotIdFromURL();
+            const parkingLot = parkingLots[lotId];
+            
+            if (!selectedSlot || !startTime || !duration || !parkingLot) {
+                showError('Please complete all reservation details.');
+                return;
+            }
+            
+            // Validate start time is in the future
+            const startDate = new Date(startTime);
+            if (startDate < new Date()) {
+                showError('Start time must be in the future.');
+                return;
+            }
+            
+            // Create reservation object
+            const reservation = {
+                id: 'res_' + Date.now(),
+                parkingLotId: lotId,
+                parkingLotName: parkingLot.name,
+                slotId: selectedSlot.value,
+                slotNumber: selectedSlot.nextElementSibling.querySelector('strong').textContent.replace('Slot ', ''),
+                startTime: startTime,
+                duration: parseInt(duration),
+                endTime: new Date(startDate.getTime() + (duration * 60 * 60 * 1000)).toISOString(),
+                totalPrice: parkingLot.pricePerHour * duration,
+                paymentMethod: paymentMethod,
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                user: JSON.parse(localStorage.getItem('loggedUser') || '{}')
+            };
+            
+            // Save to localStorage
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            reservations.push(reservation);
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            
+            // Create notification
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notification = {
+                id: 'notif_' + Date.now(),
+                title: 'Reservation Confirmed',
+                message: `Your reservation at ${parkingLot.name} has been confirmed. Total: UGX ${reservation.totalPrice.toLocaleString()}`,
+                type: 'success',
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                reservationId: reservation.id
+            };
+            notifications.push(notification);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+            
+            // Update notification badge
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+            
+            // Show success and redirect
+            showSuccess('Reservation confirmed successfully! Redirecting to dashboard...');
+            
+            setTimeout(() => {
+                window.location.href = 'reservation_success.html?id=' + reservation.id;
+            }, 2000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Scroll to error
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // Create success message element
+            const successDiv = document.createElement('div');
+            successDiv.className = 'alert-success';
+            successDiv.textContent = message;
+            successDiv.style.marginBottom = '2rem';
+            successDiv.style.animation = 'slideIn 0.5s ease';
+            
+            // Insert at top of form section
+            const formSection = document.querySelector('.reservation-form-section');
+            const form = document.getElementById('reservationForm');
+            formSection.insertBefore(successDiv, form);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 500);
+            }, 5000);
+        }
+
+        // Format date and time
+        function formatDateTime(date) {
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric'
+            }) + ' ' + date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Set default start time on page load
+        window.onload = function() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            const startTimeInput = document.getElementById('start_time');
+            if (startTimeInput) {
+                startTimeInput.min = new Date().toISOString().slice(0, 16);
+                startTimeInput.value = now.toISOString().slice(0, 16);
+            }
+            
+            updatePriceAndTime();
+            updateConfirmation();
+        };
+    </script>
+</body>
+</html>
