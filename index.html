@@ -1075,7 +1075,7 @@
                 }else if(err.response.data.username){
                     showToast('A user with that username already exists.', 'error');
                 }else if(err.response.data.password){
-                    showToast("This password is too short. It must contain at least 8 characters.", "error")
+                    showToast("This password is too weak. It must contain at least 8 special characters. e.g driver@123", "error")
                 }else{
                     showToast("registration failed!", "error")
                 }
