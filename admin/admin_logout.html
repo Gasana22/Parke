@@ -214,30 +214,6 @@
         let progressInterval;
         let progress = 0;
         const logoutDelay = 5000; // 5 seconds
-        
-        // Universal redirect function that works on all devices
-        function redirectToHome() {
-            const targetUrl = 'https://gasana22.github.io/Parke/index.html';
-            
-            console.log('Redirecting to:', targetUrl);
-            
-            // Method 1: Try replace first (works best for mobile)
-            window.location.replace(targetUrl);
-            
-            // Method 2: Fallback for stubborn browsers
-            setTimeout(() => {
-                if (window.location.href !== targetUrl) {
-                    window.location.href = targetUrl;
-                }
-            }, 100);
-            
-            // Method 3: Final fallback
-            setTimeout(() => {
-                if (window.location.href !== targetUrl) {
-                    window.location.assign(targetUrl);
-                }
-            }, 500);
-        }
 
         // Start the logout process
         function startLogoutProcess() {
@@ -275,9 +251,9 @@
             document.querySelector('p').textContent = 'You have been securely logged out. Redirecting to home page...';
             document.querySelector('.logout-icon').textContent = '✅';
             
-            // Redirect to home page after a short delay using universal redirect
+            // Redirect to home page after a short delay
             setTimeout(() => {
-                redirectToHome();
+                window.location.href = '/index.html';
             }, 1500);
         }
 
@@ -297,8 +273,8 @@
                     window.location.href = 'operator_dashboard.html';
                 }
             } else {
-                // If no user session, go to home page using universal redirect
-                redirectToHome();
+                // If no user session, go to home page
+                window.location.href = '/index.html';
             }
         }
 
@@ -320,7 +296,7 @@
                 document.querySelector('.logout-icon').textContent = '❌';
                 
                 setTimeout(() => {
-                    redirectToHome();
+                    window.location.href = '/index.html';
                 }, 2000);
                 return false;
             }
@@ -344,14 +320,6 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 cancelLogout();
-            }
-        });
-
-        // Prevent accidental navigation
-        window.addEventListener('beforeunload', function(event) {
-            if (logoutTimer) {
-                // If logout is in progress, don't show warning
-                return undefined;
             }
         });
     </script>
