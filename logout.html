@@ -242,7 +242,8 @@
             clearInterval(progressInterval);
             
             // Remove user session from localStorage
-            localStorage.removeItem('currentUser');
+            localStorage.removeItem('loggedUser');
+            localStorage.removeItem('authtokens')
             
             // Optional: Clear all stored data (uncomment if needed)
             // localStorage.clear();

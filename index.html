@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parke - Smart Parking Platform</title>
-    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         :root {
@@ -46,7 +49,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -144,7 +147,7 @@
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
             font-weight: 800;
             line-height: 1.2;
         }
@@ -181,7 +184,7 @@
 
         .auth-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -305,7 +308,7 @@
             overflow: hidden;
         }
 
-        .features > p {
+        .features>p {
             font-size: 1.1rem;
             color: var(--gray);
             max-width: 600px;
@@ -323,15 +326,15 @@
         .feature-card {
             padding: 2rem 1.5rem;
             border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             transition: var(--transition);
             background: white;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .feature-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
         }
 
         .feature-icon {
@@ -394,7 +397,7 @@
         .footer-bottom {
             margin-top: 2rem;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .modal {
@@ -405,15 +408,20 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease;
             overflow-y: auto;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
@@ -424,16 +432,17 @@
             width: 90%;
             max-width: 450px;
             position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s ease;
         }
 
         @keyframes slideUp {
-            from { 
+            from {
                 opacity: 0;
                 transform: translateY(50px);
             }
-            to { 
+
+            to {
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -457,7 +466,7 @@
 
         .close:hover {
             color: var(--dark);
-            background: rgba(0,0,0,0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .form-group {
@@ -472,7 +481,8 @@
             font-weight: 600;
         }
 
-        .form-group input, .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid #e2e8f0;
@@ -481,7 +491,8 @@
             transition: var(--transition);
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
@@ -512,7 +523,7 @@
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             animation: slideInRight 0.3s ease;
         }
@@ -522,6 +533,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -533,6 +545,7 @@
                 transform: translateX(0);
                 opacity: 1;
             }
+
             to {
                 transform: translateX(100%);
                 opacity: 0;
@@ -564,30 +577,30 @@
             .hero h1 {
                 font-size: 2.8rem;
             }
-            
+
             .hero p {
                 font-size: 1.1rem;
             }
-            
+
             .auth-container {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .auth-card {
                 width: 100%;
                 max-width: 400px;
             }
-            
+
             .nav-links {
                 display: none;
             }
-            
+
             .features h2 {
                 font-size: 1.8rem;
                 white-space: normal;
             }
-            
+
             .admin-btn {
                 display: none;
             }
@@ -597,22 +610,23 @@
             .hero h1 {
                 font-size: 2.2rem;
             }
-            
+
             .auth-card {
                 padding: 2rem 1.5rem;
             }
-            
+
             .modal-content {
                 padding: 2rem 1.5rem;
                 margin: 10% auto;
             }
-            
+
             .features h2 {
                 font-size: 1.6rem;
             }
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
         <a href="index.html" class="logo">Parke</a>
@@ -627,8 +641,9 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Smart Parking Made Simple</h1>
-            <p>Find, reserve, and pay for parking seamlessly. Join thousands of drivers and parking operators using Parke.</p>
-            
+            <p>Find, reserve, and pay for parking seamlessly. Join thousands of drivers and parking operators using
+                Parke.</p>
+
             <div class="auth-container">
                 <div class="auth-card driver">
                     <div class="auth-icon">🚗</div>
@@ -646,7 +661,8 @@
                     <p>Manage your parking facilities, update availability in real-time, and maximize your revenue.</p>
                     <button class="btn btn-operator" onclick="openOperatorLogin()">Operator Login</button>
                     <p style="margin-top: 1rem; font-size: 0.9rem;">
-                        New operator? <a href="#" onclick="openOperatorSignup()" style="color: #2196F3;">Sign up here</a>
+                        New operator? <a href="#" onclick="openOperatorSignup()" style="color: #2196F3;">Sign up
+                            here</a>
                     </p>
                 </div>
 
@@ -655,7 +671,7 @@
                     <h2>System Admin</h2>
                     <p>Manage the entire parking ecosystem, monitor performance, and configure system settings.</p>
                     <button class="btn btn-admin" onclick="openAdminLogin()">Admin Login</button>
-                    
+
                 </div>
             </div>
         </div>
@@ -696,9 +712,9 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('adminLoginModal')">&times;</span>
             <h2 style="color: var(--admin-purple);">👑 Admin Login</h2>
-            
-            
-            
+
+
+
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label for="adminUsername">Username</label>
@@ -706,12 +722,14 @@
                 </div>
                 <div class="form-group">
                     <label for="adminPassword">Password</label>
-                    <input type="password" id="adminPassword" name="password" required placeholder="Enter admin password">
+                    <input type="password" id="adminPassword" name="password" required
+                        placeholder="Enter admin password">
                 </div>
-                <button type="button" class="btn btn-admin" style="width: 100%;" onclick="handleAdminLogin()">Login to Admin Dashboard</button>
+                <button type="button" class="btn btn-admin" style="width: 100%;" onclick="handleAdminLogin()">Login to
+                    Admin Dashboard</button>
             </form>
-            
-            
+
+
         </div>
     </div>
 
@@ -720,7 +738,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('loginModal')">&times;</span>
             <h2 id="loginTitle">Login</h2>
-            
+
             <form id="loginForm">
                 <input type="hidden" name="user_type" id="loginUserType" value="driver">
                 <div class="form-group">
@@ -731,7 +749,8 @@
                     <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" name="password" required>
                 </div>
-                <button type="button" class="btn" style="width: 100%;" id="loginButton" onclick="handleLogin()">Login</button>
+                <button type="button" class="btn" style="width: 100%;" id="loginButton"
+                    onclick="handleLogin()">Login</button>
             </form>
             <div class="switch-auth">
                 Don't have an account? <a href="#" onclick="switchToSignup()">Sign up here</a>
@@ -790,7 +809,8 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn" style="width: 100%;" id="signupButton" onclick="handleSignup()">Create Account</button>
+                <button type="button" class="btn" style="width: 100%;" id="signupButton" onclick="handleSignup()">Create
+                    Account</button>
             </form>
 
             <div class="switch-auth">
@@ -801,13 +821,15 @@
 
     <script>
         let currentUserType = 'driver';
-
+        let loading = false
+        
         // Admin Login Functions
         function openAdminLogin() {
             document.getElementById('adminLoginModal').style.display = 'block';
         }
-
-        function handleAdminLogin() {
+        
+        // admin login
+        async function handleAdminLogin() {
             const username = document.getElementById('adminUsername').value;
             const password = document.getElementById('adminPassword').value;
             
@@ -815,26 +837,40 @@
                 showToast('Please enter admin credentials', 'error');
                 return;
             }
+            let AdminloginButton = document.querySelector('#adminLoginModal .btn-admin');
 
-            // Check admin credentials
-            if (username === 'gasana' && password === 'gasana') {
-                showToast('Welcome, Admin! Redirecting to dashboard...', 'success');
-                
-                // Store admin session
-                localStorage.setItem('currentUser', JSON.stringify({
-                    username: 'gasana',
-                    user_type: 'admin',
-                    role: 'Super Admin'
-                }));
-                
-                // Redirect to admin dashboard
-                setTimeout(() => {
-                    window.location.href = './admin/admin_dashboard.html';
-                }, 1500);
-                
-                closeModal('adminLoginModal');
-            } else {
-                showToast('Invalid admin credentials. Use username: gasana, password: gasana', 'error');
+            loading = true
+            AdminloginButton.innerHTML = 'logging....'
+            AdminloginButton.disabled = true;
+
+            try {
+                const res = await axios.post('http://127.0.0.1:8000/api/auth/login', {
+                    username: username,
+                    password: password
+                });
+
+                localStorage.setItem("authtokens", JSON.stringify(res.data));
+
+                const decodedUser = jwt_decode(res.data.access)
+
+                localStorage.setItem("loggedUser", JSON.stringify(decodedUser))
+
+                if (res.status === 200) {
+                    loading = false
+                    showToast('Admin logged in successfully', 'success');
+
+                    if(decodedUser?.is_staff){
+                        window.location.href = './admin/admin_dashboard.html';
+                    }
+                }
+
+            } catch (error) {
+                console.error(error);
+                showToast('Invalid admin credentials', 'error');
+            } finally {
+                loading = false;
+                AdminloginButton.innerHTML = "Login to Admin Dashboard";
+                AdminloginButton.disabled = false;
             }
         }
 
@@ -916,7 +952,7 @@
             const userTypeInput = document.getElementById('signupUserType');
             const companyInput = document.getElementById('signupCompany');
 
-            if(userType === 'driver') {
+            if (userType === 'driver') {
                 driverFields.style.display = 'block';
                 operatorFields.style.display = 'none';
                 userTypeInput.value = 'driver';
@@ -928,44 +964,59 @@
                 companyInput.required = true;
             }
         }
-
-        function handleLogin() {
+        
+        // normal user login
+        async function handleLogin() {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
             const userType = document.getElementById('loginUserType').value;
-            
+
             if (!username || !password) {
                 showToast('Please enter your username/email and password', 'error');
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => 
-                (u.username === username || u.email === username) && 
-                u.password === btoa(password) && 
-                u.user_type === userType
-            );
+            let loginButton = document.querySelector("#loginButton")
+            loading = true
+            loginButton.innerHTML = 'logging...'
 
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                
-                showToast(`Welcome back, ${user.username}!`, 'success');
-                
-                setTimeout(() => {
-                    if (userType === 'driver') {
-                        window.location.href = 'driver_dashboard.html';
-                    } else {
-                        window.location.href = 'operator_dashboard.html';
-                    }
-                }, 1500);
-                
-                closeModal('loginModal');
-            } else {
-                showToast('Invalid username or password', 'error');
+            try{
+               const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
+                    username: username,
+                    password: password
+                })
+                localStorage.setItem("authtokens", JSON.stringify(response.data));
+
+                const decodedUser = jwt_decode(response.data.access)
+
+                localStorage.setItem("loggedUser", JSON.stringify(decodedUser))
+
+                if(decodedUser?.is_operator){
+                    loading=false
+                    showToast(`Welcome back, ${decodedUser?.username}!`, 'success')
+                    window.location.href = 'operator_dashboard.html';
+                }else if(decodedUser?.is_driver){
+                    loading=false
+                    showToast(`Welcome back, ${decodedUser?.username}!`, 'success')
+                    window.location.href = 'driver_dashboard.html';
+                }
+            }catch(err){
+                console.log(err)
+                loading=false
+                if(err.response?.data.detail){
+                    showToast(`${err.response.data.detail}`, "error")
+                }else{
+                    showToast("An error occured, check connection", "error")
+                }
+            }finally{
+                loading=false
+                loginButton.innerHTML='login'
             }
+                closeModal('loginModal');
         }
-
-        function handleSignup() {
+        
+        // normal user signup
+        async function handleSignup() {
             const username = document.getElementById('signupUsername').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
@@ -974,47 +1025,65 @@
             const carPlate = document.getElementById('signupCarPlate').value;
             const company = document.getElementById('signupCompany').value;
             const businessPhone = document.getElementById('operatorPhone').value;
-            
+
             if (!username || !email || !password) {
                 showToast('Please fill in all required fields', 'error');
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const userExists = users.some(u => u.username === username || u.email === email);
-            
-            if (userExists) {
-                showToast('Username or email already exists', 'error');
-                return;
+            const driverData = {
+                username:username,
+                email:email,
+                password:password,
+                is_driver:true,
+                phone_number:phone,
+                license_plate:carPlate,
+            } 
+
+            const operatorData = {
+                username:username,
+                email:email,
+                password:password,
+                is_operator:true,
+                phone_number:businessPhone,
+                company_name:company
             }
 
-            const newUser = {
-                id: Date.now(),
-                username: username,
-                email: email,
-                password: btoa(password),
-                user_type: userType,
-                phone: phone || '',
-                car_plate: carPlate || '',
-                company_name: company || '',
-                business_phone: businessPhone || '',
-                created_at: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-            showToast('Account created successfully!', 'success');
+            let registerButton = document.querySelector("#signupButton")
+            loading = true
+            registerButton.innerHTML = 'registering...'
             
-            setTimeout(() => {
-                if (userType === 'driver') {
-                    window.location.href = 'driver_dashboard.html';
-                } else {
-                    window.location.href = 'operator_dashboard.html';
+            let response;
+            try{
+              if(userType === 'driver'){
+                response = await axios.post('http://127.0.0.1:8000/api/auth/register', driverData)
+                localStorage.setItem('loggedUser', JSON.stringify(response.data))
+                loading=false
+                showToast('Driver account created successfully!', 'success');
+                window.location.href = 'driver_dashboard.html'
+              }else{
+                response =  await axios.post('http://127.0.0.1:8000/api/auth/register', operatorData)
+                localStorage.setItem('loggedUser', JSON.stringify(response.data))
+                loading=false
+                showToast('Operator account created successfully!', 'success');
+                window.location.href = 'operator_dashboard.html';
+              }
+            }catch(err){
+                loading=false
+                if(err.response.data.phone_number){
+                    showToast("Ensure phone_number field has no more than 10 characters.", "error")
+                }else if(err.response.data.username){
+                    showToast('A user with that username already exists.', 'error');
+                }else if(err.response.data.password){
+                    showToast("This password is too short. It must contain at least 8 characters.", "error")
+                }else{
+                    showToast("registration failed!", "error")
                 }
-            }, 1500);
-            
+            }finally{
+                loading=false
+                registerButton.innerHTML="Create Account"
+            }
+
             closeModal('signupModal');
         }
 
@@ -1039,7 +1108,7 @@
 
         function createDemoAccounts() {
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
+
             const demoDriverExists = users.some(u => u.username === 'driver');
             if (!demoDriverExists) {
                 users.push({
@@ -1053,7 +1122,7 @@
                     created_at: new Date().toISOString()
                 });
             }
-            
+
             const demoOperatorExists = users.some(u => u.username === 'operator');
             if (!demoOperatorExists) {
                 users.push({
@@ -1067,11 +1136,11 @@
                     created_at: new Date().toISOString()
                 });
             }
-            
+
             localStorage.setItem('users', JSON.stringify(users));
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modals = document.getElementsByClassName('modal');
             for (let modal of modals) {
                 if (event.target == modal) {
@@ -1080,7 +1149,7 @@
             }
         }
 
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 const modals = document.getElementsByClassName('modal');
                 for (let modal of modals) {
@@ -1093,7 +1162,7 @@
             initializeData();
             createDemoAccounts();
             toggleFields('driver');
-            
+
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser) {
                 if (currentUser.user_type === 'driver') {
@@ -1107,4 +1176,5 @@
         });
     </script>
 </body>
+
 </html>

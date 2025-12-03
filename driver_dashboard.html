@@ -533,19 +533,7 @@
 
         // Initialize dashboard data
         function initializeDashboard() {
-            // Initialize localStorage data if not exists
-            if (!localStorage.getItem('currentUser')) {
-                // Create default user data
-                const defaultUser = {
-                    username: 'Driver',
-                    email: 'driver@example.com',
-                    phone: '+1234567890',
-                    car_plate: 'ABC123'
-                };
-                localStorage.setItem('currentUser', JSON.stringify(defaultUser));
-            }
-
-            if (!localStorage.getItem('reservations')) {
+          if (!localStorage.getItem('reservations')) {
                 localStorage.setItem('reservations', JSON.stringify([]));
             }
 
@@ -560,7 +548,7 @@
 
         // Load dashboard data
         function loadDashboardData() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const currentUser = JSON.parse(localStorage.getItem('loggedUser') || '{}');
             const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
             const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
             const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
@@ -569,8 +557,8 @@
             document.getElementById('username').textContent = currentUser.username || 'Driver';
             document.getElementById('profileUsername').textContent = currentUser.username || 'Driver';
             document.getElementById('profileEmail').textContent = currentUser.email || 'Not provided';
-            document.getElementById('profilePhone').textContent = currentUser.phone || 'Not provided';
-            document.getElementById('profileCarPlate').textContent = currentUser.car_plate || 'Not provided';
+            document.getElementById('profilePhone').textContent = currentUser.phone_number || 'Not provided';
+            document.getElementById('profileCarPlate').textContent = currentUser.license_plate || 'Not provided';
 
             // Calculate statistics
             const activeReservations = reservations.filter(r => r.status === 'active').length;

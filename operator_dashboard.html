@@ -673,19 +673,8 @@
             updateLastSync();
         });
 
-        // Initialize operator data
+        //Initialize operator data
         function initializeOperatorData() {
-            if (!localStorage.getItem('currentOperator')) {
-                const defaultOperator = {
-                    username: 'Operator',
-                    email: 'operator@parke.com',
-                    company: 'Premium Parking Solutions',
-                    phone: '+1234567890',
-                    memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-                };
-                localStorage.setItem('currentOperator', JSON.stringify(defaultOperator));
-            }
-
             if (!localStorage.getItem('parkingLots')) {
                 localStorage.setItem('parkingLots', JSON.stringify([]));
             }
@@ -701,7 +690,8 @@
 
         // Load dashboard data
         function loadDashboardData() {
-            const operator = JSON.parse(localStorage.getItem('currentOperator') || '{}');
+            const operator = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+            console.log('operator', operator)
             const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
             const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
             const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
@@ -710,9 +700,12 @@
             document.getElementById('username').textContent = operator.username || 'Operator';
             document.getElementById('profileUsername').textContent = operator.username || 'Operator';
             document.getElementById('profileEmail').textContent = operator.email || 'Not provided';
-            document.getElementById('profileCompany').textContent = operator.company || 'Not provided';
-            document.getElementById('profilePhone').textContent = operator.phone || 'Not provided';
-            document.getElementById('memberSince').textContent = operator.memberSince || 'Not provided';
+            document.getElementById('profileCompany').textContent = operator.company_name || 'Not provided';
+            document.getElementById('profilePhone').textContent = operator.phone_number || 'Not provided';
+
+            // date
+            const date = new Date(operator.date_joined);
+            document.getElementById('memberSince').textContent = date.toLocaleDateString() || 'Not Provided';
 
             // Calculate statistics
             const totalLots = parkingLots.length;
