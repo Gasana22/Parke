@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Parking - Parke</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER - Matches Operator Dashboard Exactly */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Rest of your existing styles */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(100%);
+            transition: transform 0.6s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stat-card.revenue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card.reservations {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .parking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .parking-table th, .parking-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .parking-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .parking-table tr:hover {
+            background: rgba(66, 153, 225, 0.05);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #a0aec0, #718096);
+            box-shadow: 0 4px 15px rgba(160, 174, 192, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .rating-stars {
+            color: #f6ad55;
+            font-size: 1.1rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .success {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            color: #22543d;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            color: #742a2a;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            text-decoration: none;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .action-card.manage::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .action-card.pricing::before { background: linear-gradient(90deg, #ed8936, #dd6b20); }
+        .action-card.analytics::before { background: linear-gradient(90deg, #9f7aea, #805ad5); }
+        .action-card.reviews::before { background: linear-gradient(90deg, #48bb78, #38a169); }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .action-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .action-card p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .parking-table {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER - Matches Operator Dashboard Exactly -->
+    <div class="header">
+        <h1>Welcome, <span id="username">Operator</span>! 🏢</h1>
+        <div class="nav-links">
+            <a href="operator_dashboard.html">Dashboard</a>
+            <a href="operator_analytics.html">Analytics</a>
+            <a href="revenue_reports.html">Revenue Reports</a>
+            <a href="payment_management.html">Payments</a>
+            <a href="notification.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="operator_settings.html">Settings</a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="message success" id="successMessage" style="display: none;"></div>
+        <div class="message error" id="errorMessage" style="display: none;"></div>
+        
+        <div class="card">
+            <h2>Parking Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLots">0</div>
+                    <div>Parking Lots</div>
+                </div>
+                <div class="stat-card revenue">
+                    <div class="stat-number" id="totalRevenue">UGX 0</div>
+                    <div>Total Revenue</div>
+                </div>
+                <div class="stat-card reservations">
+                    <div class="stat-number" id="totalReservations">0</div>
+                    <div>Total Reservations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeReservations">0</div>
+                    <div>Active Reservations</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Management Tools</h2>
+            <div class="quick-actions">
+                <a href="manage_slots.html" class="action-card manage">
+                    <h3>🅿️ Manage Slots</h3>
+                    <p>Manage parking slots availability</p>
+                </a>
+                <a href="dynamic_pricing.html" class="action-card pricing">
+                    <h3>💰 Pricing Rules</h3>
+                    <p>Set dynamic pricing strategies</p>
+                </a>
+                <a href="customer_reviews.html" class="action-card reviews">
+                    <h3>⭐ Customer Reviews</h3>
+                    <p>View and respond to reviews</p>
+                </a>
+                <a href="operator_analytics.html" class="action-card analytics">
+                    <h3>📊 View Analytics</h3>
+                    <p>Performance reports & insights</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Your Parking Lots</h2>
+            <div id="parkingLotsTable">
+                <!-- Data will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeOperatorData();
+            loadOperatorProfile();
+            loadParkingData();
+            updateNotificationCount();
+        });
+
+        function initializeOperatorData() {
+            if (!localStorage.getItem('parkingLots')) {
+                const sampleLots = [
+                    {
+                        id: 1,
+                        name: "Downtown Premium Parking",
+                        location: "123 Main St, Downtown",
+                        total_slots: 50,
+                        available_slots: 15,
+                        price_per_hour: 5000,
+                        rating: 4.5,
+                        is_active: true
+                    },
+                    {
+                        id: 2,
+                        name: "Mall Parking Complex",
+                        location: "456 Mall Road, Shopping District",
+                        total_slots: 100,
+                        available_slots: 25,
+                        price_per_hour: 3500,
+                        rating: 4.0,
+                        is_active: true
+                    },
+                    {
+                        id: 3,
+                        name: "Airport Express Parking",
+                        location: "789 Airport Blvd, Terminal A",
+                        total_slots: 200,
+                        available_slots: 80,
+                        price_per_hour: 8000,
+                        rating: 4.7,
+                        is_active: false
+                    }
+                ];
+                localStorage.setItem('parkingLots', JSON.stringify(sampleLots));
+            }
+
+            if (!localStorage.getItem('reservations')) {
+                localStorage.setItem('reservations', JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem('notifications')) {
+                localStorage.setItem('notifications', JSON.stringify([]));
+            }
+        }
+
+        function loadOperatorProfile() {
+            const operator = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+            document.getElementById('username').textContent = operator.username || 'Operator';
+        }
+
+        function updateNotificationCount() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        function loadParkingData() {
+            // Get parking lots from localStorage
+            const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            
+            // Calculate statistics
+            const totalLots = parkingLots.length;
+            const totalRevenue = reservations
+                .filter(r => r.status === 'completed')
+                .reduce((sum, r) => sum + (r.total_price || 0), 0);
+            const totalReservations = reservations.length;
+            const activeReservations = reservations.filter(r => r.status === 'active').length;
+
+            // Update statistics
+            document.getElementById('totalLots').textContent = totalLots;
+            document.getElementById('totalRevenue').textContent = `UGX ${totalRevenue.toLocaleString()}`;
+            document.getElementById('totalReservations').textContent = totalReservations;
+            document.getElementById('activeReservations').textContent = activeReservations;
+
+            // Display parking lots table
+            if (parkingLots.length > 0) {
+                let tableHTML = `
+                    <table class="parking-table">
+                        <thead>
+                            <tr>
+                                <th>Parking Lot</th>
+                                <th>Location</th>
+                                <th>Slots</th>
+                                <th>Utilization</th>
+                                <th>Rating</th>
+                                <th>Revenue</th>
+                                <th>Reservations</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                parkingLots.forEach(lot => {
+                    // Calculate lot-specific statistics
+                    const lotReservations = reservations.filter(r => r.parking_lot_name === lot.name);
+                    const lotRevenue = lotReservations
+                        .filter(r => r.status === 'completed')
+                        .reduce((sum, r) => sum + (r.total_price || 0), 0);
+                    const lotTotalReservations = lotReservations.length;
+                    const lotActiveReservations = lotReservations.filter(r => r.status === 'active').length;
+                    
+                    // Calculate utilization
+                    const utilization = lot.total_slots > 0 ? 
+                        ((lot.total_slots - lot.available_slots) / lot.total_slots) * 100 : 0;
+                    
+                    // Generate rating stars
+                    const rating = lot.rating || 0;
+                    let ratingHTML = '';
+                    if (rating > 0) {
+                        const fullStars = Math.floor(rating);
+                        const emptyStars = 5 - fullStars;
+                        ratingHTML = `
+                            <span class="rating-stars">
+                                ${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)}
+                            </span>
+                            (${rating.toFixed(1)})
+                        `;
+                    } else {
+                        ratingHTML = 'No ratings';
+                    }
+
+                    const isActive = lot.is_active !== false;
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>
+                                <strong>${lot.name || 'Unnamed Lot'}</strong><br>
+                                <small style="color: #666;">UGX ${(lot.price_per_hour || 0).toLocaleString()}/hr</small>
+                            </td>
+                            <td>${lot.location || 'Location not specified'}</td>
+                            <td>
+                                ${lot.available_slots || 0}/${lot.total_slots || 0} available
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${utilization}%"></div>
+                                </div>
+                            </td>
+                            <td>${utilization.toFixed(1)}%</td>
+                            <td>${ratingHTML}</td>
+                            <td>UGX ${lotRevenue.toLocaleString()}</td>
+                            <td>
+                                ${lotActiveReservations} active<br>
+                                <small>${lotTotalReservations} total</small>
+                            </td>
+                            <td>
+                                <span class="status-badge status-${isActive ? 'active' : 'inactive'}">
+                                    ${isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="manage_slots.html?lot_id=${lot.id}" class="btn" title="Manage Slots">
+                                        🅿️ Slots
+                                    </a>
+                                    <a href="dynamic_pricing.html?lot_id=${lot.id}" class="btn btn-warning" title="Pricing">
+                                        💰 Pricing
+                                    </a>
+                                    <button type="button" class="btn ${isActive ? 'btn-warning' : 'btn-success'}" 
+                                            onclick="toggleLotStatus(${lot.id}, ${isActive})"
+                                            title="${isActive ? 'Deactivate' : 'Activate'} Parking Lot">
+                                        ${isActive ? '⏸️ Deactivate' : '▶️ Activate'}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+
+                document.getElementById('parkingLotsTable').innerHTML = tableHTML;
+            } else {
+                document.getElementById('parkingLotsTable').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <h3>🚗 No Parking Lots Assigned</h3>
+                        <p>You don't have any parking lots assigned to your account yet.</p>
+                        <p>Please contact the administrator to get parking lots assigned to your operator account.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleLotStatus(lotId, currentStatus) {
+            if (confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this parking lot?`)) {
+                // Get parking lots from localStorage
+                const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
+                
+                // Find and update the lot status
+                const updatedLots = parkingLots.map(lot => {
+                    if (lot.id === lotId) {
+                        return { ...lot, is_active: !currentStatus };
+                    }
+                    return lot;
+                });
+                
+                // Save back to localStorage
+                localStorage.setItem('parkingLots', JSON.stringify(updatedLots));
+                
+                // Show success message
+                document.getElementById('successMessage').textContent = 
+                    `Parking lot status ${currentStatus ? 'deactivated' : 'activated'} successfully!`;
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+                
+                // Reload the data
+                setTimeout(() => {
+                    loadParkingData();
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        // Auto-refresh notification count every 30 seconds
+        setInterval(updateNotificationCount, 30000);
+    </script>
+</body>
+</html>

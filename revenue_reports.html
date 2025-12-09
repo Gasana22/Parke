@@ -903,20 +903,7 @@
                         available_slots: 15,
                         operator_id: 1
                     },
-                    {
-                        id: 2,
-                        name: "Mall Parking Complex",
-                        total_slots: 100,
-                        available_slots: 25,
-                        operator_id: 1
-                    },
-                    {
-                        id: 3,
-                        name: "Airport Express Parking",
-                        total_slots: 200,
-                        available_slots: 80,
-                        operator_id: 1
-                    }
+                    
                 ];
                 localStorage.setItem('parkingLots', JSON.stringify(sampleLots));
             }
@@ -931,22 +918,7 @@
                         status: 'active',
                         created_at: new Date().toISOString()
                     },
-                    {
-                        id: 2,
-                        parking_lot_name: "Mall Parking Complex",
-                        slot_number: "B-05",
-                        total_price: 8000,
-                        status: 'completed',
-                        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        parking_lot_name: "Airport Express Parking",
-                        slot_number: "C-12",
-                        total_price: 25000,
-                        status: 'completed',
-                        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-                    }
+                    
                 ];
                 localStorage.setItem('reservations', JSON.stringify(sampleReservations));
             }

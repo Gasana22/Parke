@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pricing - Parke</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER - Matches Operator Dashboard Exactly */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .lot-info {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .lot-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .base-rate-section {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: none;
+            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .base-rate-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+        }
+
+        .special-rate-section {
+            background: linear-gradient(135deg, #bee3f8, #90cdf4);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: none;
+            box-shadow: 0 10px 30px rgba(66, 153, 225, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .special-rate-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+        }
+
+        select, input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            width: 100%;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .message {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(13, 162, 113, 0.1));
+            color: #064e3b;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            color: #7f1d1d;
+            border-left: 4px solid var(--danger);
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .pricing-table th, .pricing-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .pricing-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .pricing-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .currency {
+            font-weight: bold;
+            color: var(--dark);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        small {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        h3 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .pricing-table {
+                font-size: 0.8rem;
+            }
+            
+            .pricing-table th, .pricing-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER - Matches Operator Dashboard Exactly -->
+    <div class="header">
+        <h1>Welcome, <span id="username">Operator</span>! 🏢</h1>
+        <div class="nav-links">
+             <a href="operator_dashboard.html">Dashboard</a>
+            <a href="operator_analytics.html">Analytics</a>
+            <a href="revenue_reports.html">Revenue Reports</a>
+            <a href="payment_management.html">Payments</a>
+            <a href="notification.html">
+                Notifications
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </a>
+            <a href="operator_settings.html">Settings</a>
+            <a href="logout.html">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="message success" id="successMessage" style="display: none;"></div>
+        <div class="message error" id="errorMessage" style="display: none;"></div>
+        
+        <div id="pricingContent">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeOperatorData();
+            loadOperatorProfile();
+            loadPricingData();
+            updateNotificationCount();
+        });
+
+        function initializeOperatorData() {
+            // Initialize pricing rules if not exists
+            if (!localStorage.getItem('pricingRules')) {
+                const sampleRules = [
+                    {
+                        id: 1,
+                        parking_lot_id: 1,
+                        day_of_week: 6, // Saturday
+                        start_hour: 8,
+                        end_hour: 20,
+                        special_price: 6000,
+                        created_at: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        parking_lot_id: 1,
+                        day_of_week: 0, // Sunday
+                        start_hour: 8,
+                        end_hour: 18,
+                        special_price: 5500,
+                        created_at: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('pricingRules', JSON.stringify(sampleRules));
+            }
+
+            if (!localStorage.getItem('parkingLots')) {
+                const sampleLots = [
+                    {
+                        id: 1,
+                        name: "Downtown Premium Parking",
+                        address: "123 Main St, Downtown",
+                        total_slots: 50,
+                        available_slots: 15,
+                        price_per_hour: 5000,
+                        operator_id: 1
+                    }
+                ];
+                localStorage.setItem('parkingLots', JSON.stringify(sampleLots));
+            }
+
+            if (!localStorage.getItem('notifications')) {
+                localStorage.setItem('notifications', JSON.stringify([]));
+            }
+        }
+
+        function loadOperatorProfile() {
+            const operator = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+            document.getElementById('username').textContent = operator.username || 'Operator';
+        }
+
+        function updateNotificationCount() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
+        }
+
+        function loadPricingData() {
+            const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
+            const pricingRules = JSON.parse(localStorage.getItem('pricingRules') || '[]');
+            
+            const parkingLot = parkingLots[0] || null;
+            
+            let content = '';
+            
+            if (!parkingLot) {
+                content = `
+                    <div class="card">
+                        <div class="message error">
+                            <h3>🚫 No Parking Lot Found</h3>
+                            <p>Unable to load your parking lot information. Please try again later.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const lotRules = pricingRules.filter(rule => rule.parking_lot_id === parkingLot.id);
+                
+                content = `
+                    <div class="card">
+                        <div class="lot-info">
+                            <h2>🏢 ${parkingLot.name}</h2>
+                            <p>Manage your parking rates and special pricing periods.</p>
+                        </div>
+                        
+                        <div class="base-rate-section">
+                            <h3>Standard Hourly Rate</h3>
+                            <form id="baseRateForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="price_per_hour">Hourly Rate <span class="currency">(UGX)</span></label>
+                                        <input type="number" id="price_per_hour" name="price_per_hour" 
+                                               value="${parkingLot.price_per_hour || 5000}" 
+                                               step="100" min="500" max="50000" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn">Update Standard Rate</button>
+                                    </div>
+                                </div>
+                                <small>Enter amount in Ugandan Shillings (UGX)</small>
+                            </form>
+                        </div>
+
+                        <div class="special-rate-section">
+                            <h3>Add Special Time Pricing</h3>
+                            <form id="specialRateForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="day_of_week">Day of Week</label>
+                                        <select id="day_of_week" name="day_of_week" required>
+                                            <option value="0">Sunday</option>
+                                            <option value="1">Monday</option>
+                                            <option value="2">Tuesday</option>
+                                            <option value="3">Wednesday</option>
+                                            <option value="4">Thursday</option>
+                                            <option value="5">Friday</option>
+                                            <option value="6">Saturday</option>
+                                            <option value="7">Everyday</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="start_hour">Start Hour (0-23)</label>
+                                        <input type="number" id="start_hour" name="start_hour" min="0" max="23" required placeholder="8">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end_hour">End Hour (0-23)</label>
+                                        <input type="number" id="end_hour" name="end_hour" min="0" max="23" required placeholder="18">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="special_price">Special Price <span class="currency">(UGX per hour)</span></label>
+                                        <input type="number" id="special_price" name="special_price" step="100" min="500" max="50000" required placeholder="3000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-success">Add Special Pricing</button>
+                                    </div>
+                                </div>
+                                <small>Enter amount in Ugandan Shillings (UGX)</small>
+                            </form>
+                        </div>
+                `;
+                
+                if (lotRules.length > 0) {
+                    content += `
+                        <div style="margin-top: 2rem;">
+                            <h3>Active Special Pricing</h3>
+                            <table class="pricing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Time</th>
+                                        <th>Special Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Everyday'];
+                    
+                    lotRules.forEach(rule => {
+                        content += `
+                            <tr>
+                                <td>${days[rule.day_of_week]}</td>
+                                <td>${String(rule.start_hour).padStart(2, '0')}:00 - ${String(rule.end_hour).padStart(2, '0')}:00</td>
+                                <td><strong><span class="currency">UGX ${rule.special_price.toLocaleString()}</span>/hr</strong></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger delete-rule" data-rule-id="${rule.id}">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    content += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+                
+                content += `</div>`;
+            }
+            
+            document.getElementById('pricingContent').innerHTML = content;
+            
+            // Add event listeners
+            document.getElementById('baseRateForm')?.addEventListener('submit', handleUpdateBaseRate);
+            document.getElementById('specialRateForm')?.addEventListener('submit', handleAddSpecialRate);
+            
+            // Add delete event listeners
+            document.querySelectorAll('.delete-rule').forEach(button => {
+                button.addEventListener('click', handleDeleteRule);
+            });
+        }
+
+        function handleUpdateBaseRate(e) {
+            e.preventDefault();
+            
+            const pricePerHour = parseInt(document.getElementById('price_per_hour').value);
+            
+            // Update parking lot price
+            const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
+            const parkingLot = parkingLots[0];
+            
+            if (parkingLot) {
+                parkingLot.price_per_hour = pricePerHour;
+                localStorage.setItem('parkingLots', JSON.stringify(parkingLots));
+                
+                showSuccess("Base hourly rate updated successfully!");
+            } else {
+                showError("No parking lot found to update.");
+            }
+        }
+
+        function handleAddSpecialRate(e) {
+            e.preventDefault();
+            
+            const dayOfWeek = parseInt(document.getElementById('day_of_week').value);
+            const startHour = parseInt(document.getElementById('start_hour').value);
+            const endHour = parseInt(document.getElementById('end_hour').value);
+            const specialPrice = parseInt(document.getElementById('special_price').value);
+            
+            // Validation
+            if (startHour >= endHour) {
+                showError("End hour must be greater than start hour.");
+                return;
+            }
+            
+            if (specialPrice < 500 || specialPrice > 50000) {
+                showError("Special price must be between UGX 500 and UGX 50,000.");
+                return;
+            }
+            
+            // Get current parking lot
+            const parkingLots = JSON.parse(localStorage.getItem('parkingLots') || '[]');
+            const parkingLot = parkingLots[0];
+            
+            if (!parkingLot) {
+                showError("No parking lot found.");
+                return;
+            }
+            
+            // Check for overlapping rules
+            const pricingRules = JSON.parse(localStorage.getItem('pricingRules') || '[]');
+            const overlappingRule = pricingRules.find(rule => 
+                rule.parking_lot_id === parkingLot.id &&
+                rule.day_of_week === dayOfWeek &&
+                ((startHour >= rule.start_hour && startHour < rule.end_hour) ||
+                 (endHour > rule.start_hour && endHour <= rule.end_hour) ||
+                 (startHour <= rule.start_hour && endHour >= rule.end_hour))
+            );
+            
+            if (overlappingRule) {
+                showError("This pricing rule overlaps with an existing rule for the same day and time.");
+                return;
+            }
+            
+            // Add new rule
+            const newRule = {
+                id: Date.now(), // Simple ID generation
+                parking_lot_id: parkingLot.id,
+                day_of_week: dayOfWeek,
+                start_hour: startHour,
+                end_hour: endHour,
+                special_price: specialPrice,
+                created_at: new Date().toISOString()
+            };
+            
+            pricingRules.push(newRule);
+            localStorage.setItem('pricingRules', JSON.stringify(pricingRules));
+            
+            showSuccess("Special pricing rule added successfully!");
+            
+            // Reset form
+            e.target.reset();
+            
+            // Reload pricing data after a short delay
+            setTimeout(() => {
+                loadPricingData();
+            }, 1500);
+        }
+
+        function handleDeleteRule(e) {
+            const ruleId = parseInt(e.target.dataset.ruleId);
+            
+            if (confirm('Are you sure you want to delete this pricing rule?')) {
+                const pricingRules = JSON.parse(localStorage.getItem('pricingRules') || '[]');
+                const updatedRules = pricingRules.filter(rule => rule.id !== ruleId);
+                
+                localStorage.setItem('pricingRules', JSON.stringify(updatedRules));
+                
+                showSuccess("Pricing rule deleted successfully!");
+                
+                // Reload pricing data after a short delay
+                setTimeout(() => {
+                    loadPricingData();
+                }, 1000);
+            }
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            const successDiv = document.getElementById('successMessage');
+            successDiv.style.display = 'none';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Auto-refresh notification count every 30 seconds
+        setInterval(updateNotificationCount, 30000);
+    </script>
+</body>
+</html>
