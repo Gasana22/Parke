@@ -429,9 +429,8 @@
     <div class="header">
         <h1>Welcome, <span id="username">Driver</span>! 🚗</h1>
         <div class="nav-links">
-             <a href="driver_dashboard.html">Dashbaord</a>
+            <a href="driver_dashboard.html">Dashboard</a>
             <a href="find_parking.html">Find Parking</a>
-            
             <a href="payment.html">Payment Methods</a>
             <a href="notification.html">
                 Notifications
@@ -481,9 +480,6 @@
                         <h4>💳 Payment Methods</h4>
                         <p>Manage your payment options</p>
                     </a>
-                  
-                    
-                    
                 </div>
             </div>
         </div>
@@ -503,7 +499,7 @@
             <h3 style="margin-top: 2rem;">Quick Links</h3>
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 <a href="find_parking.html" class="btn">🔍 Find Parking</a>
-                <a href="my_reservations.html" class="btn btn-secondary">📋 My Reservations</a>
+               
                 <a href="notifications.html" class="btn btn-secondary">
                     🔔 Notifications 
                     (<span id="notificationCount">0</span> new)
@@ -520,9 +516,9 @@
             setupActionCards();
         });
 
-        // Initialize dashboard data
+        // Initialize dashboard data with empty arrays
         function initializeDashboard() {
-          if (!localStorage.getItem('reservations')) {
+            if (!localStorage.getItem('reservations')) {
                 localStorage.setItem('reservations', JSON.stringify([]));
             }
 
@@ -535,7 +531,7 @@
             }
         }
 
-        // Load dashboard data
+        // Load dashboard data - all values set to zero
         function loadDashboardData() {
             const currentUser = JSON.parse(localStorage.getItem('loggedUser') || '{}');
             const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
@@ -549,13 +545,11 @@
             document.getElementById('profilePhone').textContent = currentUser.phone_number || 'Not provided';
             document.getElementById('profileCarPlate').textContent = currentUser.license_plate || 'Not provided';
 
-            // Calculate statistics
-            const activeReservations = reservations.filter(r => r.status === 'active').length;
-            const totalReservations = reservations.length;
-            const unreadNotifications = notifications.filter(n => !n.isRead).length;
-            const totalSpent = reservations
-                .filter(r => r.status === 'completed' || r.status === 'active')
-                .reduce((sum, r) => sum + (r.total_price || 0), 0);
+            // Calculate statistics - all set to zero
+            const activeReservations = 0;
+            const totalReservations = 0;
+            const unreadNotifications = 0;
+            const totalSpent = 0;
 
             // Calculate driver rating
             const driverReviews = reviews.filter(r => r.user_id === currentUser.id);
@@ -563,7 +557,7 @@
                 ? (driverReviews.reduce((sum, r) => sum + r.rating, 0) / driverReviews.length).toFixed(1)
                 : 'No ratings yet';
 
-            // Update dashboard statistics
+            // Update dashboard statistics - all zeros
             document.getElementById('activeReservations').textContent = activeReservations;
             document.getElementById('totalReservations').textContent = totalReservations;
             document.getElementById('unreadNotifications').textContent = unreadNotifications;
@@ -601,85 +595,8 @@
             });
         }
 
-        // Add sample data for demonstration
-        function addSampleData() {
-            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-
-            // Add sample reservations if none exist
-            if (reservations.length === 0) {
-                const sampleReservations = [
-                    {
-                        id: 1,
-                        parking_lot_name: "Downtown Premium Parking",
-                        slot_number: "A-01",
-                        hours: 3,
-                        total_price: 15000,
-                        status: 'active',
-                        start_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-                        end_time: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
-                        created_at: new Date().toISOString()
-                    },
-                    {
-                        id: 2,
-                        parking_lot_name: "Mall Parking Complex",
-                        slot_number: "B-02",
-                        hours: 2,
-                        total_price: 6000,
-                        status: 'completed',
-                        start_time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                        end_time: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
-                        created_at: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString()
-                    }
-                ];
-                localStorage.setItem('reservations', JSON.stringify(sampleReservations));
-            }
-
-            // Add sample notifications if none exist
-            if (notifications.length === 0) {
-                const sampleNotifications = [
-                    {
-                        id: 1,
-                        title: "Welcome to Parke!",
-                        message: "Thank you for joining our parking platform. Find your perfect parking spot!",
-                        type: "system",
-                        isRead: false,
-                        createdAt: new Date().toISOString(),
-                        actions: []
-                    },
-                    {
-                        id: 2,
-                        title: "Reservation Reminder",
-                        message: "Your parking reservation starts in 1 hour.",
-                        type: "alert",
-                        isRead: true,
-                        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                        actions: [
-                            { label: "View Reservation", url: "find_parking.html" }
-                        ]
-                    }
-                ];
-                localStorage.setItem('notifications', JSON.stringify(sampleNotifications));
-            }
-
-            // Add sample reviews if none exist
-            if (reviews.length === 0) {
-                const sampleReviews = [
-                    {
-                        id: 1,
-                        parking_lot_name: "Mall Parking Complex",
-                        rating: 4.5,
-                        comment: "Great parking facility with good security.",
-                        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-                    }
-                ];
-                localStorage.setItem('reviews', JSON.stringify(sampleReviews));
-            }
-        }
-
-        // Call sample data initialization
-        addSampleData();
+        // REMOVED: addSampleData() function completely
+        // No dummy data will be added automatically
     </script>
 </body>
 </html>
