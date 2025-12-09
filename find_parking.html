@@ -6,57 +6,56 @@
     <title>Find Parking - Parke</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
         }
 
         body {
-            background: #f7fafc;
-            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
+        /* EXACT DRIVER DASHBOARD HEADER MATCH */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-100%);
+            z-index: 100;
         }
 
-        .header:hover::before {
-            transform: translateX(100%);
-            transition: transform 0.8s ease;
-        }
-
-        .header h1 a {
-            text-decoration: none;
-            color: white;
-            font-weight: 800;
+        .header h1 {
             font-size: 1.8rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .header h1 a:hover {
-            transform: scale(1.05);
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-links {
@@ -67,55 +66,41 @@
 
         .nav-links a {
             text-decoration: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-links a:hover::before {
-            left: 100%;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
         }
 
         .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--primary);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .notification-badge {
-            background: linear-gradient(135deg, #f56565, #e53e3e);
+            background: var(--danger);
             color: white;
-            border-radius: 50%;
+            border-radius: 20px;
             padding: 4px 8px;
             font-size: 0.75rem;
             font-weight: 700;
-            margin-left: 5px;
-            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -131,39 +116,33 @@
             }
             
             .nav-links a {
-                flex: 1;
-                text-align: center;
-                min-width: 120px;
+                justify-content: center;
             }
         }
 
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --glass: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
         }
 
+        /* Main Content */
         .container {
             max-width: 1400px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
 
-        h1 {
+        h1.page-title {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--dark);
             text-align: center;
         }
 
@@ -624,7 +603,7 @@
                 margin: 1rem auto;
             }
             
-            h1 {
+            h1.page-title {
                 font-size: 2rem;
             }
             
@@ -713,13 +692,15 @@
     </style>
 </head>
 <body>
+    <!-- EXACT DRIVER DASHBOARD HEADER -->
     <div class="header">
-        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <h1>Find Parking</h1>
         <div class="nav-links">
-            <a href="find_parking.html">Find Parking</a>
+            <a href="driver_dashboard.html">Dashboard</a>
+            <a href="find_parking.html" class="active">Find Parking</a>
             <a href="my_reservations.html">My Reservations</a>
             <a href="payment.html">Payment Methods</a>
-            <a href="notifications.html">
+            <a href="notification.html">
                 Notifications
                 <span class="notification-badge" id="notificationBadge">0</span>
             </a>
@@ -728,7 +709,7 @@
     </div>
 
     <div class="container">
-        <h1>Find Parking</h1>
+        <h1 class="page-title">Find Parking</h1>
         
         <div class="search-filters">
             <form method="GET" class="filter-form" id="searchForm">
@@ -795,11 +776,10 @@
                 price_per_hour: 5000,
                 amenities: "Security, CCTV, Covered",
                 images: [
-                    "https://images.unsplash.com/photo-1547866951-4463f95ad763?w=500",
-                    
+                    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500",
+                    "https://images.unsplash.com/photo-1507149833265-60c372daea22?w-500"
                 ]
-            },
-           
+            }
         ];
 
         // Initialize page

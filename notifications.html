@@ -6,57 +6,55 @@
     <title>Notifications - Parke</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
         }
 
         body {
-            background: #f7fafc;
-            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-100%);
+            z-index: 100;
         }
 
-        .header:hover::before {
-            transform: translateX(100%);
-            transition: transform 0.8s ease;
-        }
-
-        .header h1 a {
-            text-decoration: none;
-            color: white;
-            font-weight: 800;
+        .header h1 {
             font-size: 1.8rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .header h1 a:hover {
-            transform: scale(1.05);
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-links {
@@ -67,127 +65,67 @@
 
         .nav-links a {
             text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover, .nav-links a:focus {
+            background: var(--primary);
             color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-links a:hover::before {
-            left: 100%;
-        }
-
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            outline: none;
         }
 
         .notification-badge {
-            background: linear-gradient(135deg, #f56565, #e53e3e);
+            background: var(--danger);
             color: white;
-            border-radius: 50%;
+            border-radius: 20px;
             padding: 4px 8px;
             font-size: 0.75rem;
             font-weight: 700;
-            margin-left: 5px;
-            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                justify-content: center;
-                width: 100%;
-            }
-            
-            .nav-links a {
-                flex: 1;
-                text-align: center;
-                min-width: 120px;
-            }
-        }
-
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --glass: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--dark);
-            line-height: 1.6;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
         }
 
         .container {
             max-width: 900px;
             margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 2.5rem;
             border-radius: 20px;
             box-shadow: var(--shadow);
+            margin-bottom: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 2rem;
+            margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        h1::before {
-            content: '🔔';
-            font-size: 2.5rem;
         }
 
         .header-actions {
@@ -199,27 +137,50 @@
             gap: 1rem;
         }
 
-        .mark-all-read {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+        .btn {
             padding: 12px 24px;
-            border-radius: 12px;
+            background: var(--primary);
+            color: white;
             text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
-        .mark-all-read:hover {
+        .btn:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            background: linear-gradient(135deg, var(--primary-dark), #4338ca);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .notification-count {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .notifications-list {
@@ -289,7 +250,6 @@
             color: var(--gray);
             font-size: 1.05rem;
             line-height: 1.6;
-            padding-left: 1.75rem;
         }
 
         .notification-time {
@@ -298,7 +258,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding-left: 1.75rem;
             font-weight: 500;
         }
 
@@ -333,27 +292,6 @@
             font-size: 4rem;
             margin-bottom: 1.5rem;
             opacity: 0.5;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 2rem;
-            padding: 12px 24px;
-            background: var(--gray);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
-        }
-
-        .back-link:hover {
-            background: #475569;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
         }
 
         .notification-type-reservation {
@@ -406,6 +344,7 @@
             font-weight: 600;
             transition: var(--transition);
             border: 1px solid rgba(99, 102, 241, 0.2);
+            cursor: pointer;
         }
 
         .action-btn:hover {
@@ -415,25 +354,29 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1.5rem;
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
             }
             
-            h1 {
-                font-size: 2rem;
-                flex-direction: column;
-                text-align: center;
-                gap: 0.5rem;
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
             }
             
             .header-actions {
                 flex-direction: column;
                 align-items: stretch;
-            }
-            
-            .mark-all-read {
-                justify-content: center;
             }
             
             .notification {
@@ -442,11 +385,6 @@
             
             .notification h3 {
                 font-size: 1.1rem;
-            }
-            
-            .notification p,
-            .notification-time {
-                padding-left: 0;
             }
             
             .empty-state {
@@ -459,10 +397,18 @@
         }
 
         @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
             .container {
                 margin: 0.5rem;
                 padding: 1rem;
-                border-radius: 12px;
             }
             
             .notification {
@@ -475,11 +421,6 @@
             
             .notification p {
                 font-size: 0.95rem;
-            }
-            
-            .back-link {
-                width: 100%;
-                justify-content: center;
             }
         }
 
@@ -494,114 +435,158 @@
             }
         }
 
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
-        .notification-count {
-            background: var(--danger);
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
             color: white;
-            border-radius: 50%;
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-left: 0.5rem;
-            min-width: 20px;
-            text-align: center;
-            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <h1>Welcome, <span id="username">Operator</span>! 🏢</h1>
         <div class="nav-links">
-            <a href="find_parking.html">Find Parking</a>
-            <a href="my_reservations.html">My Reservations</a>
-            <a href="payment.html">Payment Methods</a>
+            <a href="operator_dashboard.html">Dashboard</a>
+            <a href="operator_analytics.html">Analytics</a>
+            <a href="revenue_reports.html">Revenue Reports</a>
+            <a href="payment_management.html">Payments</a>
             <a href="notifications.html">
                 Notifications
-                <span class="notification-badge" id="notificationBadge">0</span>
+                <span class="notification-badge" id="notificationBadge">3</span>
             </a>
+            <a href="operator_settings.html">Settings</a>
             <a href="logout.html">Logout</a>
         </div>
     </div>
 
     <div class="container">
-        <h1>🔔 Notifications</h1>
-        
-        <div class="header-actions">
-            <button class="mark-all-read" onclick="markAllAsRead()">
-                ✅ Mark All as Read
-            </button>
-            <div class="notification-count" id="unreadCount">0 unread</div>
+        <div class="card">
+            <h1>🔔 Notifications</h1>
+            
+            <div class="header-actions">
+                <button class="btn" onclick="markAllAsRead()">
+                    ✅ Mark All as Read
+                </button>
+                <div class="notification-count" id="unreadCount">
+                    🔴 <span id="unreadCountNumber">3</span> unread notifications
+                </div>
+            </div>
+            
+            <div class="notifications-list" id="notificationsList">
+                <!-- Notifications will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="operator_dashboard.html" class="btn btn-secondary">
+                    ← Back to Dashboard
+                </a>
+            </div>
         </div>
-        
-        <div class="notifications-list" id="notificationsList">
-            <!-- Notifications will be loaded here -->
-        </div>
-        
-        <a href="driver_dashboard.html" class="back-link">
-            ← Back to Dashboard
-        </a>
     </div>
 
     <script>
-        // Sample notification data
+        // Sample notification data for operators
         const sampleNotifications = [
             {
                 id: 1,
-                title: "Reservation Confirmed",
-                message: "Your parking reservation at Downtown Premium Parking has been confirmed for today at 2:00 PM.",
-                type: "reservation",
+                title: "New High Revenue Alert",
+                message: "Your Downtown Premium Parking location generated UGX 450,000 in revenue today - 25% above average!",
+                type: "payment",
                 isRead: false,
                 createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
                 actions: [
-                    { label: "View Reservation", url: "my_reservations.html" },
-                    { label: "Get Directions", url: "find_parking.html" }
+                    { label: "View Revenue Report", url: "revenue_reports.html" },
+                    { label: "Analytics", url: "operator_analytics.html" }
                 ]
             },
             {
                 id: 2,
-                title: "Payment Successful",
-                message: "Your payment of UGX 15,000 for parking at Downtown Premium Parking Complex has been processed successfully.",
-                type: "payment",
+                title: "Parking Lot Capacity Warning",
+                message: "Mall Parking Complex is at 95% capacity. Consider opening additional slots or adjusting pricing.",
+                type: "alert",
                 isRead: false,
                 createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
                 actions: [
-                    { label: "View Receipt", url: "payment.html" }
+                    { label: "Manage Slots", url: "manage_slots.html" },
+                    { label: "Dynamic Pricing", url: "dynamic_pricing.html" }
                 ]
             },
             {
                 id: 3,
-                title: "Reservation Reminder",
-                message: "Reminder: Your parking reservation at Airport Express Parking starts in 1 hour.",
-                type: "alert",
-                isRead: true,
+                title: "Payment System Update",
+                message: "Mobile Money payments are experiencing temporary delays. Credit card payments remain unaffected.",
+                type: "system",
+                isRead: false,
                 createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
                 actions: [
-                    { label: "View Details", url: "my_reservations.html" }
+                    { label: "Payment Dashboard", url: "payment_management.html" }
                 ]
             },
             {
                 id: 4,
-                title: "System Maintenance",
-                message: "Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM. The app may be temporarily unavailable.",
-                type: "system",
+                title: "New Customer Review",
+                message: "Customer John D. left a 5-star review for Airport Express Parking: 'Excellent service and clean facilities!'",
+                type: "reservation",
                 isRead: true,
                 createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-                actions: []
+                actions: [
+                    { label: "View Reviews", url: "customer_reviews.html" }
+                ]
             },
             {
                 id: 5,
-                title: "Parking Spot Available",
-                message: "A premium parking spot has become available at City Center Garage. Reserve now!",
-                type: "alert",
+                title: "Maintenance Scheduled",
+                message: "Scheduled maintenance for payment gateway will occur tonight from 1:00 AM to 3:00 AM. Plan accordingly.",
+                type: "system",
                 isRead: true,
                 createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+                actions: []
+            },
+            {
+                id: 6,
+                title: "Peak Hours Analysis",
+                message: "Your peak revenue hours this week were 5-7 PM. Consider implementing surge pricing during these hours.",
+                type: "alert",
+                isRead: true,
+                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
                 actions: [
-                    { label: "Reserve Now", url: "find_parking.html" }
+                    { label: "Analytics", url: "operator_analytics.html" },
+                    { label: "Pricing Settings", url: "dynamic_pricing.html" }
                 ]
             }
         ];
@@ -611,20 +596,36 @@
             initializeNotifications();
             loadNotifications();
             updateNotificationBadge();
+            loadOperatorData();
         });
+
+        // Load operator data
+        function loadOperatorData() {
+            // In a real application, you would fetch this data from an API
+            const operator = {
+                username: 'Operator',
+                email: 'operator@parke.com',
+                company: 'Premium Parking Solutions',
+                phone: '+1234567890',
+                memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+            };
+            
+            // Update operator information
+            document.getElementById('username').textContent = operator.username;
+        }
 
         // Initialize notifications in localStorage
         function initializeNotifications() {
-            if (!localStorage.getItem('notifications')) {
-                localStorage.setItem('notifications', JSON.stringify(sampleNotifications));
+            if (!localStorage.getItem('operatorNotifications')) {
+                localStorage.setItem('operatorNotifications', JSON.stringify(sampleNotifications));
             }
         }
 
         // Load and display notifications
         function loadNotifications() {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('operatorNotifications') || '[]');
             const notificationsList = document.getElementById('notificationsList');
-            const unreadCount = document.getElementById('unreadCount');
+            const unreadCountElement = document.getElementById('unreadCountNumber');
 
             if (notifications.length === 0) {
                 notificationsList.innerHTML = `
@@ -634,7 +635,7 @@
                         <p>You're all caught up! New notifications will appear here.</p>
                     </div>
                 `;
-                unreadCount.textContent = '0 unread';
+                unreadCountElement.textContent = '0';
                 return;
             }
 
@@ -642,7 +643,7 @@
             notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             const unreadNotifications = notifications.filter(n => !n.isRead);
-            unreadCount.textContent = `${unreadNotifications.length} unread`;
+            unreadCountElement.textContent = unreadNotifications.length;
 
             notificationsList.innerHTML = notifications.map(notification => `
                 <div class="notification ${notification.isRead ? '' : 'unread'} notification-type-${notification.type}">
@@ -669,12 +670,12 @@
 
         // Mark a single notification as read
         function markAsRead(notificationId) {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('operatorNotifications') || '[]');
             const notificationIndex = notifications.findIndex(n => n.id === notificationId);
             
             if (notificationIndex !== -1) {
                 notifications[notificationIndex].isRead = true;
-                localStorage.setItem('notifications', JSON.stringify(notifications));
+                localStorage.setItem('operatorNotifications', JSON.stringify(notifications));
                 loadNotifications();
                 updateNotificationBadge();
                 
@@ -685,13 +686,13 @@
 
         // Mark all notifications as read
         function markAllAsRead() {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('operatorNotifications') || '[]');
             
             notifications.forEach(notification => {
                 notification.isRead = true;
             });
             
-            localStorage.setItem('notifications', JSON.stringify(notifications));
+            localStorage.setItem('operatorNotifications', JSON.stringify(notifications));
             loadNotifications();
             updateNotificationBadge();
             
@@ -701,7 +702,7 @@
 
         // Update notification badge in header
         function updateNotificationBadge() {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('operatorNotifications') || '[]');
             const unreadCount = notifications.filter(n => !n.isRead).length;
             document.getElementById('notificationBadge').textContent = unreadCount;
         }
@@ -742,19 +743,6 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--primary);
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
-                animation: slideInRight 0.3s ease;
-            `;
-
             document.body.appendChild(toast);
 
             setTimeout(() => {
@@ -763,58 +751,31 @@
             }, 3000);
         }
 
-        // Add CSS for toast animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
         // Add demo notification function (for testing)
         function addDemoNotification() {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const notifications = JSON.parse(localStorage.getItem('operatorNotifications') || '[]');
             const newNotification = {
                 id: Date.now(),
-                title: "Demo Notification",
-                message: "This is a demo notification added for testing purposes.",
+                title: "System Test Notification",
+                message: "This is a test notification to verify the notification system is working properly.",
                 type: "system",
                 isRead: false,
                 createdAt: new Date().toISOString(),
                 actions: [
-                    { label: "Learn More", url: "#" }
+                    { label: "View System Status", url: "operator_dashboard.html" }
                 ]
             };
             
             notifications.unshift(newNotification);
-            localStorage.setItem('notifications', JSON.stringify(notifications));
+            localStorage.setItem('operatorNotifications', JSON.stringify(notifications));
             loadNotifications();
             updateNotificationBadge();
             
-            showToast('Demo notification added');
+            showToast('Test notification added');
         }
 
         // Uncomment the line below to add a button for testing notifications
-        // document.querySelector('.header-actions').innerHTML += '<button class="mark-all-read" onclick="addDemoNotification()" style="background: var(--secondary);">+ Add Demo</button>';
+        // document.querySelector('.header-actions').innerHTML += '<button class="btn" onclick="addDemoNotification()" style="background: var(--secondary);">+ Add Test</button>';
     </script>
 </body>
 </html>

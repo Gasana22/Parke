@@ -3,140 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reservations - Parke</title>
+    <title>Payment Methods - Parke</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: #f7fafc;
-            color: #2d3748;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-100%);
-        }
-
-        .header:hover::before {
-            transform: translateX(100%);
-            transition: transform 0.8s ease;
-        }
-
-        .header h1 a {
-            text-decoration: none;
-            color: white;
-            font-weight: 800;
-            font-size: 1.8rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .header h1 a:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-links a:hover::before {
-            left: 100%;
-        }
-
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-
-        .notification-badge {
-            background: linear-gradient(135deg, #f56565, #e53e3e);
-            color: white;
-            border-radius: 50%;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-left: 5px;
-            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                justify-content: center;
-                width: 100%;
-            }
-            
-            .nav-links a {
-                flex: 1;
-                text-align: center;
-                min-width: 120px;
-            }
-        }
-
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -152,20 +21,140 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* EXACT DRIVER DASHBOARD HEADER MATCH */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+        }
+
+        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
 
-        h1 {
+        h1.page-title {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--dark);
             text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .alert-success {
@@ -182,212 +171,116 @@
             gap: 0.5rem;
         }
 
-        .filter-tabs {
-            display: flex;
-            gap: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 1.25rem 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: var(--gray);
-            background: transparent;
-            border-right: 1px solid #f1f5f9;
-            transition: var(--transition);
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab:last-child {
-            border-right: none;
-        }
-
-        .tab:hover {
-            background: rgba(99, 102, 241, 0.05);
-            color: var(--primary);
-        }
-
-        .tab.active {
-            background: var(--primary);
+        .alert-error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            border-left: 4px solid white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .tab.active::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: white;
+        .payment-layout {
+            display: grid;
+            gap: 2rem;
         }
 
-        .reservation-card {
+        .payment-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 20px;
             box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
-            border-left: 6px solid var(--primary);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.5s ease;
         }
 
-        .reservation-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-        }
-
-        .reservation-card.status-active {
-            border-left-color: var(--primary);
-        }
-
-        .reservation-card.status-active::before {
-            background: var(--primary);
-        }
-
-        .reservation-card.status-completed {
-            border-left-color: var(--secondary);
-        }
-
-        .reservation-card.status-completed::before {
-            background: var(--secondary);
-        }
-
-        .reservation-card.status-cancelled {
-            border-left-color: var(--danger);
-        }
-
-        .reservation-card.status-cancelled::before {
-            background: var(--danger);
-        }
-
-        .reservation-card:hover {
-            transform: translateY(-5px);
+        .payment-section:hover {
             box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
 
-        .reservation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+        .payment-card {
+            max-width: 600px;
         }
 
-        .reservation-header h3 {
-            margin: 0;
-            color: var(--dark);
-            font-size: 1.4rem;
-            font-weight: 700;
-            flex: 1;
-            min-width: 250px;
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .status-badge {
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 0.5rem;
         }
 
-        .status-badge.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-
-        .status-badge.completed {
-            background: linear-gradient(135deg, var(--secondary), #0da271);
-            color: white;
-        }
-
-        .status-badge.cancelled {
-            background: linear-gradient(135deg, var(--danger), #dc2626);
-            color: white;
-        }
-
-        .reservation-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: rgba(248, 250, 252, 0.8);
-            border-radius: 10px;
-            transition: var(--transition);
-        }
-
-        .detail-row:hover {
-            background: rgba(99, 102, 241, 0.05);
-            transform: translateX(5px);
-        }
-
-        .detail-row .label {
+        .form-group label {
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group small {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-check {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
         }
 
-        .price {
-            font-weight: 700;
-            color: var(--secondary);
-            font-size: 1.1rem;
+        .form-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid var(--gray);
+            cursor: pointer;
         }
 
-        .countdown {
-            font-weight: 700;
-            color: var(--warning);
-            background: rgba(245, 158, 11, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .reservation-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid #f1f5f9;
+        .form-check label {
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             background: var(--primary);
             color: white;
             text-decoration: none;
@@ -400,7 +293,7 @@
             gap: 0.5rem;
             font-weight: 600;
             transition: var(--transition);
-            font-size: 0.95rem;
+            font-size: 1rem;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
@@ -408,6 +301,16 @@
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
         }
 
         .btn-secondary {
@@ -430,45 +333,220 @@
             box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
-        .reviewed-badge {
+        .payment-method-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .payment-method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .payment-method-card.default {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .payment-method-card.default::before {
+            background: var(--secondary);
+        }
+
+        .payment-method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .method-type {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .default-badge {
             background: linear-gradient(135deg, var(--secondary), #0da271);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
 
-        .no-reservations {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 2px dashed #e2e8f0;
+        .method-details {
+            margin-bottom: 1.5rem;
         }
 
-        .no-reservations h3 {
-            font-size: 1.8rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
             font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            letter-spacing: 1px;
         }
 
-        .no-reservations p {
+        .expiry, .added-date {
             color: var(--gray);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .no-reservations .btn {
+        .method-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-history {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .payment-history table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .payment-history th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.25rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-history td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: var(--transition);
+        }
+
+        .payment-history tr:hover td {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .payment-history tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .amount.negative {
+            color: var(--danger);
+        }
+
+        .status-completed {
+            color: var(--secondary);
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            color: var(--warning);
+            font-weight: 700;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-failed {
+            color: var(--danger);
+            font-weight: 700;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .transaction-summary {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .no-methods, .no-history {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--gray);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .security-note {
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary);
+            font-size: 0.9rem;
+            color: var(--dark);
             margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .security-note::before {
+            content: '🔒';
+            font-size: 1.5rem;
         }
 
         @media (max-width: 768px) {
@@ -477,69 +555,62 @@
                 margin: 1rem auto;
             }
             
-            h1 {
+            h1.page-title {
                 font-size: 2rem;
             }
             
-            .filter-tabs {
-                flex-direction: column;
-                border-radius: 12px;
+            .payment-section {
+                padding: 1.5rem;
             }
             
-            .tab {
-                border-right: none;
-                border-bottom: 1px solid #f1f5f9;
+            .form-row {
+                grid-template-columns: 1fr;
             }
             
-            .tab:last-child {
-                border-bottom: none;
-            }
-            
-            .reservation-header {
+            .method-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
             
-            .reservation-header h3 {
-                min-width: auto;
-            }
-            
-            .reservation-details {
-                grid-template-columns: 1fr;
-            }
-            
-            .reservation-actions {
+            .method-actions {
                 flex-direction: column;
+                width: 100%;
             }
             
-            .reservation-actions .btn {
+            .method-actions form {
+                width: 100%;
+            }
+            
+            .method-actions .btn {
                 width: 100%;
                 justify-content: center;
+            }
+            
+            .payment-history {
+                font-size: 0.9rem;
+            }
+            
+            .payment-history th,
+            .payment-history td {
+                padding: 1rem 0.5rem;
             }
         }
 
         @media (max-width: 480px) {
-            .reservation-card {
+            .payment-method-card {
                 padding: 1.5rem;
             }
             
-            .detail-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
+            .card-number {
+                font-size: 1.1rem;
             }
             
-            .status-badge {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.8rem;
+            .empty-state {
+                padding: 1rem;
             }
             
-            .no-reservations {
-                padding: 2rem 1rem;
-            }
-            
-            .no-reservations h3 {
-                font-size: 1.5rem;
+            .empty-state h3 {
+                font-size: 1.3rem;
             }
         }
 
@@ -554,19 +625,12 @@
             }
         }
 
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
+        .form-group input:invalid {
+            border-color: var(--danger);
         }
 
-        .confirm-dialog {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 400px;
-            margin: 2rem auto;
+        .form-group input:valid {
+            border-color: var(--secondary);
         }
 
         .toast {
@@ -606,13 +670,15 @@
     </style>
 </head>
 <body>
+    <!-- EXACT DRIVER DASHBOARD HEADER -->
     <div class="header">
-        <h1><a href="driver_dashboard.html" style="text-decoration: none; color: inherit;">Parke 🚗</a></h1>
+        <h1>Payment Methods</h1>
         <div class="nav-links">
+            <a href="driver_dashboard.html">Dashboard</a>
             <a href="find_parking.html">Find Parking</a>
             <a href="my_reservations.html">My Reservations</a>
-            <a href="payment.html">Payment Methods</a>
-            <a href="notifications.html">
+            <a href="payment.html" class="active">Payment Methods</a>
+            <a href="notification.html">
                 Notifications
                 <span class="notification-badge" id="notificationBadge">0</span>
             </a>
@@ -621,284 +687,350 @@
     </div>
 
     <div class="container">
-        <h1>My Reservations</h1>
+        <h1 class="page-title">Payment Methods</h1>
         
         <div class="alert-success" id="successAlert" style="display: none;">
-            ✅ Reservation cancelled successfully!
+            ✅ Payment method added successfully!
         </div>
         
-        <div class="filter-tabs">
-            <a href="my_reservations.html?status=all" class="tab" id="tabAll">All</a>
-            <a href="my_reservations.html?status=active" class="tab" id="tabActive">Active</a>
-            <a href="my_reservations.html?status=completed" class="tab" id="tabCompleted">Completed</a>
-            <a href="my_reservations.html?status=cancelled" class="tab" id="tabCancelled">Cancelled</a>
+        <div class="alert-error" id="errorAlert" style="display: none;">
+            ❌ Error message will appear here
         </div>
         
-        <div class="reservations-list" id="reservationsList">
-            <!-- Reservations will be loaded here -->
+        <div class="payment-layout">
+            <div class="payment-section">
+                <h2>Add Payment Method</h2>
+                <div class="payment-card">
+                    <form id="paymentForm" class="payment-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Card Number *</label>
+                                <input type="text" name="card_number" id="cardNumber" placeholder="1234 5678 9012 3456" required 
+                                       pattern="[0-9\s]{13,19}" maxlength="19">
+                                <small>Enter 16-digit card number</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Card Holder Name *</label>
+                                <input type="text" name="card_holder" id="cardHolder" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date *</label>
+                                <input type="text" name="expiry_date" id="expiryDate" placeholder="MM/YY" required 
+                                       pattern="(0[1-9]|1[0-2])\/[0-9]{2}">
+                                <small>Format: MM/YY</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>CVV *</label>
+                                <input type="text" name="cvv" id="cvv" placeholder="123" required 
+                                       pattern="[0-9]{3,4}" maxlength="4">
+                                <small>3 or 4 digits on back of card</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" name="is_default" id="isDefault">
+                            <label for="isDefault">Set as default payment method</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-large">Add Payment Method</button>
+                    </form>
+                    
+                    <div class="security-note">
+                        Your payment information is securely encrypted and stored. We never store your full card details.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-section">
+                <h2>Saved Payment Methods</h2>
+                
+                <div class="saved-methods" id="savedMethods">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="payment-section">
+                <h2>Recent Transactions</h2>
+                
+                <div class="payment-history" id="paymentHistory">
+                    <!-- Transaction history will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            loadReservations();
+            initializePaymentData();
+            loadPaymentMethods();
+            loadTransactionHistory();
             updateNotificationBadge();
-            setupFilterTabs();
-            checkURLSuccess();
+            setupFormHandlers();
+            setupInputFormatting();
         });
 
-        // Load reservations based on filter
-        function loadReservations() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const statusFilter = urlParams.get('status') || 'all';
-            
-            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-            let filteredReservations = reservations;
-
-            // Apply status filter
-            if (statusFilter !== 'all') {
-                filteredReservations = reservations.filter(reservation => 
-                    reservation.status === statusFilter
-                );
+        // Initialize payment data in localStorage
+        function initializePaymentData() {
+            if (!localStorage.getItem('payment_methods')) {
+                localStorage.setItem('payment_methods', JSON.stringify([]));
             }
-
-            displayReservations(filteredReservations, statusFilter);
-            updateActiveTab(statusFilter);
+            if (!localStorage.getItem('transactions')) {
+                localStorage.setItem('transactions', JSON.stringify([]));
+            }
         }
 
-        // Display reservations in the UI
-        function displayReservations(reservations, statusFilter) {
-            const reservationsList = document.getElementById('reservationsList');
+        // Load and display payment methods
+        function loadPaymentMethods() {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const savedMethods = document.getElementById('savedMethods');
             
-            if (reservations.length === 0) {
-                reservationsList.innerHTML = `
-                    <div class="no-reservations">
-                        <h3>No reservations found</h3>
-                        <p>
-                            ${statusFilter !== 'all' ? 
-                                `You don't have any ${statusFilter} reservations.` : 
-                                "You haven't made any reservations yet."
-                            }
-                        </p>
-                        <a href="find_parking.html" class="btn">Find Parking</a>
+            if (paymentMethods.length === 0) {
+                savedMethods.innerHTML = `
+                    <div class="no-methods">
+                        <div class="empty-state">
+                            <h3>No payment methods saved</h3>
+                            <p>Add your first payment method to make reservations faster!</p>
+                        </div>
                     </div>
                 `;
                 return;
             }
 
-            // Sort by start time (newest first)
-            reservations.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
-
-            reservationsList.innerHTML = reservations.map(reservation => {
-                const startTime = new Date(reservation.start_time);
-                const endTime = new Date(reservation.end_time);
-                const now = new Date();
-                const minutesUntilStart = Math.floor((startTime - now) / (1000 * 60));
-                
-                return `
-                    <div class="reservation-card status-${reservation.status}">
-                        <div class="reservation-header">
-                            <h3>${reservation.parking_lot_name}</h3>
-                            <span class="status-badge ${reservation.status}">
-                                ${reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
-                            </span>
+            savedMethods.innerHTML = paymentMethods.map(method => `
+                <div class="payment-method-card ${method.isDefault ? 'default' : ''}">
+                    <div class="method-header">
+                        <div class="method-type">
+                            ${getCardIcon(method.cardType)} ${method.cardType}
                         </div>
-                        
-                        <div class="reservation-details">
-                            <div class="detail-row">
-                                <span class="label">📍 Address:</span>
-                                <span>${getParkingLotAddress(reservation.parking_lot_id)}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">🅿️ Slot:</span>
-                                <span>${reservation.slot_number}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">📅 Start Time:</span>
-                                <span>${formatDateTime(startTime)}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">⏰ End Time:</span>
-                                <span>${formatDateTime(endTime)}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">💰 Total Price:</span>
-                                <span class="price">UGX ${reservation.total_price.toLocaleString()}</span>
-                            </div>
-                            
-                            ${reservation.status === 'active' && minutesUntilStart > 0 ? `
-                                <div class="detail-row">
-                                    <span class="label">⏳ Starts in:</span>
-                                    <span class="countdown">
-                                        ${formatCountdown(minutesUntilStart)}
-                                    </span>
-                                </div>
-                            ` : ''}
-                        </div>
-                        
-                        <div class="reservation-actions">
-                            ${reservation.status === 'active' ? `
-                                <button type="button" class="btn btn-danger" onclick="cancelReservation(${reservation.id})">
-                                    Cancel Reservation
-                                </button>
-                                
-                                ${minutesUntilStart <= 30 ? `
-                                    <button class="btn btn-secondary" onclick="extendReservation(${reservation.id})">
-                                        Extend Time
-                                    </button>
-                                ` : ''}
-                                
-                            ` : reservation.status === 'completed' ? `
-                                ${!hasReviewed(reservation.id) ? `
-                                    <button class="btn" onclick="writeReview(${reservation.id})">
-                                        Write Review
-                                    </button>
-                                ` : `
-                                    <span class="reviewed-badge">✅ Reviewed</span>
-                                `}
-                            ` : ''}
-                            
-                            <button class="btn btn-secondary" onclick="viewReservationDetails(${reservation.id})">
-                                View Details
+                        ${method.isDefault ? '<span class="default-badge">Default</span>' : ''}
+                    </div>
+                    
+                    <div class="method-details">
+                        <div class="card-number">**** **** **** ${method.lastFour}</div>
+                        <div class="expiry">Expires: ${method.expiryDate}</div>
+                        <div class="added-date">Added: ${formatDate(method.createdAt)}</div>
+                    </div>
+                    
+                    <div class="method-actions">
+                        ${!method.isDefault ? `
+                            <button type="button" class="btn btn-small" onclick="setDefaultPayment('${method.id}')">
+                                Set as Default
                             </button>
+                        ` : ''}
+                        
+                        <button type="button" class="btn btn-small btn-danger" onclick="deletePaymentMethod('${method.id}')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load transaction history
+        function loadTransactionHistory() {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const paymentHistory = document.getElementById('paymentHistory');
+            
+            if (transactions.length === 0) {
+                paymentHistory.innerHTML = `
+                    <div class="no-history">
+                        <div class="empty-state">
+                            <h3>No transactions yet</h3>
+                            <p>Your transaction history will appear here after you make reservations.</p>
+                            <a href="find_parking.html" class="btn">Find Parking</a>
                         </div>
                     </div>
                 `;
-            }).join('');
+                return;
+            }
+
+            // Sort transactions by date (newest first)
+            transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            paymentHistory.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${transactions.map(transaction => `
+                            <tr>
+                                <td>${formatDate(transaction.createdAt)}</td>
+                                <td>
+                                    ${transaction.type === 'reservation' ? 
+                                        '🅿️ Parking: ' + transaction.description : 
+                                        '💳 ' + transaction.description
+                                    }
+                                </td>
+                                <td class="amount ${transaction.amount < 0 ? 'negative' : ''}">
+                                    UGX ${Math.abs(transaction.amount).toLocaleString()}
+                                </td>
+                                <td>
+                                    <span class="status-${transaction.status}">
+                                        ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                    </span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
         }
 
-        // Get parking lot address (mock data)
-        function getParkingLotAddress(parkingLotId) {
-            const addresses = {
-                1: "123 Main Street, Downtown",
-                2: "456 Shopping Avenue",
-                3: "789 Airport Road"
+        // Setup form handlers
+        function setupFormHandlers() {
+            document.getElementById('paymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addPaymentMethod();
+            });
+        }
+
+        // Setup input formatting
+        function setupInputFormatting() {
+            const cardNumberInput = document.getElementById('cardNumber');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue.trim();
+            });
+            
+            const expiryInput = document.getElementById('expiryDate');
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                }
+                e.target.value = value;
+            });
+        }
+
+        // Add new payment method
+        function addPaymentMethod() {
+            const formData = new FormData(document.getElementById('paymentForm'));
+            const cardNumber = formData.get('card_number').replace(/\s/g, '');
+            const cardHolder = formData.get('card_holder');
+            const expiryDate = formData.get('expiry_date');
+            const cvv = formData.get('cvv');
+            const isDefault = document.getElementById('isDefault').checked;
+
+            // Validation
+            if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                showError('Invalid card number. Must be 16 digits.');
+                return;
+            }
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+                showError('Invalid expiry date format. Use MM/YY.');
+                return;
+            }
+
+            if (!/^\d{3,4}$/.test(cvv)) {
+                showError('Invalid CVV. Must be 3 or 4 digits.');
+                return;
+            }
+
+            // Determine card type
+            const firstDigit = cardNumber.charAt(0);
+            let cardType = 'Other';
+            if (firstDigit === '4') cardType = 'Visa';
+            else if (firstDigit === '5') cardType = 'Mastercard';
+            else if (firstDigit === '3') cardType = 'American Express';
+
+            const lastFour = cardNumber.slice(-4);
+
+            // Create payment method object
+            const paymentMethod = {
+                id: Date.now().toString(),
+                cardType: cardType,
+                lastFour: lastFour,
+                expiryDate: expiryDate,
+                cardHolder: cardHolder,
+                isDefault: isDefault,
+                createdAt: new Date().toISOString()
             };
-            return addresses[parkingLotId] || "Address not available";
+
+            // Save to localStorage
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            
+            // If setting as default, remove default from others
+            if (isDefault) {
+                paymentMethods.forEach(method => method.isDefault = false);
+            }
+            
+            paymentMethods.push(paymentMethod);
+            localStorage.setItem('payment_methods', JSON.stringify(paymentMethods));
+
+            showSuccess('Payment method added successfully!');
+            document.getElementById('paymentForm').reset();
+            loadPaymentMethods();
         }
 
-        // Format date and time
-        function formatDateTime(date) {
+        // Set default payment method
+        function setDefaultPayment(methodId) {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            
+            paymentMethods.forEach(method => {
+                method.isDefault = method.id === methodId;
+            });
+            
+            localStorage.setItem('payment_methods', JSON.stringify(paymentMethods));
+            showSuccess('Default payment method updated!');
+            loadPaymentMethods();
+        }
+
+        // Delete payment method
+        function deletePaymentMethod(methodId) {
+            if (!confirm('Are you sure you want to delete this payment method?')) {
+                return;
+            }
+
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const filteredMethods = paymentMethods.filter(method => method.id !== methodId);
+            
+            localStorage.setItem('payment_methods', JSON.stringify(filteredMethods));
+            showSuccess('Payment method deleted!');
+            loadPaymentMethods();
+        }
+
+        // Get card icon based on type
+        function getCardIcon(cardType) {
+            switch(cardType) {
+                case 'Visa': return '💳';
+                case 'Mastercard': return '💳';
+                case 'American Express': return '💳';
+                default: return '💳';
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
             return date.toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric', 
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
+                year: 'numeric' 
             });
-        }
-
-        // Format countdown timer
-        function formatCountdown(minutes) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-        }
-
-        // Check if reservation has been reviewed
-        function hasReviewed(reservationId) {
-            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-            return reviews.some(review => review.reservation_id === reservationId);
-        }
-
-        // Cancel reservation
-        function cancelReservation(reservationId) {
-            if (!confirm('Are you sure you want to cancel this reservation?')) {
-                return;
-            }
-
-            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-            const reservationIndex = reservations.findIndex(r => r.id === reservationId);
-            
-            if (reservationIndex !== -1) {
-                reservations[reservationIndex].status = 'cancelled';
-                localStorage.setItem('reservations', JSON.stringify(reservations));
-
-                // Create cancellation notification
-                createCancellationNotification(reservations[reservationIndex]);
-
-                // Show success message
-                showSuccess('Reservation cancelled successfully!');
-
-                // Reload reservations
-                setTimeout(() => {
-                    loadReservations();
-                }, 1000);
-            }
-        }
-
-        // Create cancellation notification
-        function createCancellationNotification(reservation) {
-            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-            
-            const notification = {
-                id: Date.now(),
-                title: "Reservation Cancelled",
-                message: `Your reservation at ${reservation.parking_lot_name} (Slot ${reservation.slot_number}) has been cancelled successfully.`,
-                type: "alert",
-                isRead: false,
-                createdAt: new Date().toISOString(),
-                actions: [
-                    { label: "View Reservations", url: "my_reservations.html" }
-                ]
-            };
-            
-            notifications.unshift(notification);
-            localStorage.setItem('notifications', JSON.stringify(notifications));
-            updateNotificationBadge();
-        }
-
-        // Extend reservation (placeholder function)
-        function extendReservation(reservationId) {
-            alert('Extend reservation functionality would be implemented here.');
-        }
-
-        // Write review (placeholder function)
-        function writeReview(reservationId) {
-            alert('Review functionality would be implemented here.');
-        }
-
-        // View reservation details (placeholder function)
-        function viewReservationDetails(reservationId) {
-            alert(`Viewing details for reservation #${reservationId}`);
-        }
-
-        // Setup filter tabs
-        function setupFilterTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const status = this.getAttribute('href').split('status=')[1] || 'all';
-                    window.history.pushState({}, '', `my_reservations.html?status=${status}`);
-                    loadReservations();
-                });
-            });
-        }
-
-        // Update active tab
-        function updateActiveTab(statusFilter) {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-                const tabStatus = tab.getAttribute('href').split('status=')[1] || 'all';
-                if (tabStatus === statusFilter) {
-                    tab.classList.add('active');
-                }
-            });
-        }
-
-        // Check for success message in URL
-        function checkURLSuccess() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('success') === 'cancelled') {
-                document.getElementById('successAlert').style.display = 'flex';
-                setTimeout(() => {
-                    document.getElementById('successAlert').style.display = 'none';
-                }, 5000);
-            }
         }
 
         // Update notification badge
@@ -919,34 +1051,74 @@
             }, 5000);
         }
 
-        // Initialize sample reservations if none exist
-        function initializeSampleReservations() {
-            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-            if (reservations.length === 0) {
-                const sampleReservations = [
+        // Show error message
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = `❌ ${message}`;
+            errorAlert.style.display = 'flex';
+            
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Initialize sample data if empty
+        function initializeSampleData() {
+            const paymentMethods = JSON.parse(localStorage.getItem('payment_methods') || '[]');
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+
+            if (paymentMethods.length === 0) {
+                const sampleMethods = [
                     {
-                        id: 1,
-                        parking_lot_id: 1,
-                        parking_lot_name: "Downtown Premium Parking",
-                        slot_id: 101,
-                        slot_number: "A-01",
-                        slot_type: "standard",
-                        hours: 3,
-                        total_price: 15000,
-                        start_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
-                        end_time: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(), // 5 hours from now
-                        status: 'active',
-                        created_at: new Date().toISOString()
-                    },
-                   
+                        id: '1',
+                        cardType: 'Visa',
+                        lastFour: '1234',
+                        expiryDate: '12/25',
+                        cardHolder: 'John Doe',
+                        isDefault: true,
+                        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+                    }
                 ];
-                
-                localStorage.setItem('reservations', JSON.stringify(sampleReservations));
+                localStorage.setItem('payment_methods', JSON.stringify(sampleMethods));
+            }
+
+            if (transactions.length === 0) {
+                const sampleTransactions = [
+                    {
+                        type: 'reservation',
+                        description: 'Downtown Premium Parking',
+                        amount: -15000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        type: 'reservation',
+                        description: 'Mall Parking Complex',
+                        amount: -8000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        type: 'payment',
+                        description: 'Card Payment - Visa',
+                        amount: 21000,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        type: 'reservation',
+                        description: 'Airport Secure Parking',
+                        amount: -48000,
+                        status: 'failed',
+                        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                localStorage.setItem('transactions', JSON.stringify(sampleTransactions));
             }
         }
 
-        // Call initialization
-        initializeSampleReservations();
+        // Call sample data initialization
+        initializeSampleData();
     </script>
 </body>
 </html>
