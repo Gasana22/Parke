@@ -533,61 +533,8 @@
                     { label: "Analytics", url: "operator_analytics.html" }
                 ]
             },
-            {
-                id: 2,
-                title: "Parking Lot Capacity Warning",
-                message: "Mall Parking Complex is at 95% capacity. Consider opening additional slots or adjusting pricing.",
-                type: "alert",
-                isRead: false,
-                createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-                actions: [
-                    { label: "Manage Slots", url: "manage_slots.html" },
-                    { label: "Dynamic Pricing", url: "dynamic_pricing.html" }
-                ]
-            },
-            {
-                id: 3,
-                title: "Payment System Update",
-                message: "Mobile Money payments are experiencing temporary delays. Credit card payments remain unaffected.",
-                type: "system",
-                isRead: false,
-                createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
-                actions: [
-                    { label: "Payment Dashboard", url: "payment_management.html" }
-                ]
-            },
-            {
-                id: 4,
-                title: "New Customer Review",
-                message: "Customer John D. left a 5-star review for Airport Express Parking: 'Excellent service and clean facilities!'",
-                type: "reservation",
-                isRead: true,
-                createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-                actions: [
-                    { label: "View Reviews", url: "customer_reviews.html" }
-                ]
-            },
-            {
-                id: 5,
-                title: "Maintenance Scheduled",
-                message: "Scheduled maintenance for payment gateway will occur tonight from 1:00 AM to 3:00 AM. Plan accordingly.",
-                type: "system",
-                isRead: true,
-                createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-                actions: []
-            },
-            {
-                id: 6,
-                title: "Peak Hours Analysis",
-                message: "Your peak revenue hours this week were 5-7 PM. Consider implementing surge pricing during these hours.",
-                type: "alert",
-                isRead: true,
-                createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-                actions: [
-                    { label: "Analytics", url: "operator_analytics.html" },
-                    { label: "Pricing Settings", url: "dynamic_pricing.html" }
-                ]
-            }
+           
+            
         ];
 
         // Initialize notifications

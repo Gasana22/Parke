@@ -632,17 +632,7 @@
                         end_time: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
                         created_at: new Date().toISOString()
                     },
-                    {
-                        id: 2,
-                        parking_lot_name: "Mall Parking Complex",
-                        slot_number: "B-02",
-                        hours: 2,
-                        total_price: 6000,
-                        status: 'completed',
-                        start_time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                        end_time: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
-                        created_at: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString()
-                    }
+                   
                 ];
                 localStorage.setItem('reservations', JSON.stringify(sampleReservations));
             }
@@ -675,18 +665,7 @@
             }
 
             // Add sample reviews if none exist
-            if (reviews.length === 0) {
-                const sampleReviews = [
-                    {
-                        id: 1,
-                        parking_lot_name: "Mall Parking Complex",
-                        rating: 4.5,
-                        comment: "Great parking facility with good security.",
-                        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-                    }
-                ];
-                localStorage.setItem('reviews', JSON.stringify(sampleReviews));
-            }
+           
         }
 
         // Call sample data initialization

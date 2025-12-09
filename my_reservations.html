@@ -938,34 +938,7 @@
                         status: 'active',
                         created_at: new Date().toISOString()
                     },
-                    {
-                        id: 2,
-                        parking_lot_id: 2,
-                        parking_lot_name: "Mall Parking Complex",
-                        slot_id: 201,
-                        slot_number: "B-02",
-                        slot_type: "standard",
-                        hours: 2,
-                        total_price: 6000,
-                        start_time: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-                        end_time: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000).toISOString(),
-                        status: 'completed',
-                        created_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        parking_lot_id: 3,
-                        parking_lot_name: "Airport Express Parking",
-                        slot_id: 301,
-                        slot_number: "C-01",
-                        slot_type: "premium",
-                        hours: 4,
-                        total_price: 32000,
-                        start_time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
-                        end_time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000).toISOString(),
-                        status: 'cancelled',
-                        created_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString()
-                    }
+                   
                 ];
                 
                 localStorage.setItem('reservations', JSON.stringify(sampleReservations));
