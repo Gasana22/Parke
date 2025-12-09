@@ -34,6 +34,7 @@
             line-height: 1.6;
         }
 
+        /* EXACT OPERATOR DASHBOARD HEADER MATCH */
         .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -77,12 +78,17 @@
             background: rgba(99, 102, 241, 0.05);
         }
 
-        .nav-links a:hover, .nav-links a:focus {
+        .nav-links a:hover {
             background: var(--primary);
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            outline: none;
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .notification-badge {
@@ -97,6 +103,35 @@
             box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
         }
 
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+        }
+
+        /* Main Content */
         .container {
             max-width: 800px;
             margin: 2rem auto;
@@ -131,7 +166,7 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         }
 
-        h1 {
+        h1.page-title {
             font-size: 2.2rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
@@ -296,17 +331,6 @@
         }
 
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-            
-            .nav-links {
-                justify-content: center;
-                width: 100%;
-            }
-            
             .container {
                 padding: 0 1rem;
                 margin: 1rem auto;
@@ -316,21 +340,12 @@
                 padding: 1.5rem;
             }
             
-            h1 {
+            h1.page-title {
                 font-size: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .nav-links {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .nav-links a {
-                justify-content: center;
-            }
-            
             .container {
                 margin: 0.5rem;
                 padding: 1rem;
@@ -339,6 +354,7 @@
     </style>
 </head>
 <body>
+    <!-- EXACT OPERATOR DASHBOARD HEADER -->
     <div class="header">
         <h1>Welcome, <span id="username">Operator</span>! 🏢</h1>
         <div class="nav-links">
@@ -350,14 +366,14 @@
                 Notifications
                 <span class="notification-badge" id="notificationBadge">1</span>
             </a>
-            <a href="operator_settings.html">Settings</a>
+            <a href="operator_settings.html" class="active">Settings</a>
             <a href="logout.html">Logout</a>
         </div>
     </div>
 
     <div class="container">
         <div class="card">
-            <h1>⚙️ Operator Settings</h1>
+            <h1 class="page-title">⚙️ Operator Settings</h1>
 
             <div id="successMessage" class="message success" style="display: none;"></div>
             <div id="errorMessage" class="message error" style="display: none;"></div>
@@ -458,31 +474,41 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadOperatorData();
             setupFormHandlers();
+            updateNotificationBadge();
         });
 
-        // Load operator data
+        // Load operator data from localStorage
         function loadOperatorData() {
-            // In a real application, you would fetch this data from an API
-            const operator = {
-                username: 'parke_operator',
-                email: 'operator@parke.com',
-                company_name: 'Premium Parking Solutions',
-                phone: '+256 712 345 678',
-                notification_preferences: ['new_reservations', 'cancellations', 'reviews', 'payments', 'system']
-            };
+            const operator = JSON.parse(localStorage.getItem('loggedUser') || '{}');
             
             // Update form fields with operator data
-            document.getElementById('usernameInput').value = operator.username;
-            document.getElementById('emailInput').value = operator.email;
-            document.getElementById('companyName').value = operator.company_name;
-            document.getElementById('phone').value = operator.phone;
-            document.getElementById('username').textContent = operator.username;
+            document.getElementById('usernameInput').value = operator.username || 'Operator';
+            document.getElementById('emailInput').value = operator.email || 'Not provided';
+            document.getElementById('companyName').value = operator.company_name || '';
+            document.getElementById('phone').value = operator.phone_number || '';
+            document.getElementById('username').textContent = operator.username || 'Operator';
 
-            // Set notification preferences
+            // Set notification preferences from localStorage or defaults
+            const notificationPrefs = JSON.parse(localStorage.getItem('operator_notification_prefs') || '[]');
             const checkboxes = document.querySelectorAll('input[name="notifications"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = operator.notification_preferences.includes(checkbox.value);
-            });
+            
+            if (notificationPrefs.length === 0) {
+                // Set default preferences
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            } else {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = notificationPrefs.includes(checkbox.value);
+                });
+            }
+        }
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            document.getElementById('notificationBadge').textContent = unreadCount;
         }
 
         // Setup form handlers
@@ -511,18 +537,20 @@
             const companyName = document.getElementById('companyName').value;
             const phone = document.getElementById('phone').value;
 
-            // In a real application, you would send this data to an API
-            console.log('Updating profile:', { companyName, phone });
+            // Get current operator data
+            const operator = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+            
+            // Update operator data
+            operator.company_name = companyName;
+            operator.phone_number = phone;
+            
+            // Save to localStorage
+            localStorage.setItem('loggedUser', JSON.stringify(operator));
 
             showSuccessMessage('Profile updated successfully!');
             
-            // Simulate API call
-            setTimeout(() => {
-                // Update the username display if company name changed significantly
-                if (companyName.includes('Solutions')) {
-                    document.getElementById('username').textContent = 'Premium Operator';
-                }
-            }, 1000);
+            // Update username display
+            document.getElementById('username').textContent = operator.username;
         }
 
         // Update notification preferences
@@ -530,8 +558,8 @@
             const checkboxes = document.querySelectorAll('input[name="notifications"]:checked');
             const selectedNotifications = Array.from(checkboxes).map(cb => cb.value);
 
-            // In a real application, you would send this data to an API
-            console.log('Updating notification preferences:', selectedNotifications);
+            // Save to localStorage
+            localStorage.setItem('operator_notification_prefs', JSON.stringify(selectedNotifications));
 
             showSuccessMessage('Notification preferences saved successfully!');
         }
@@ -554,8 +582,7 @@
             }
 
             // In a real application, you would send this data to an API
-            console.log('Changing password');
-
+            // For demo purposes, we'll just show success
             showSuccessMessage('Password changed successfully!');
             
             // Clear password fields
@@ -570,7 +597,7 @@
             const errorElement = document.getElementById('errorMessage');
             
             errorElement.style.display = 'none';
-            successElement.textContent = message;
+            successElement.textContent = '✅ ' + message;
             successElement.style.display = 'flex';
             
             setTimeout(() => {
@@ -584,7 +611,7 @@
             const errorElement = document.getElementById('errorMessage');
             
             successElement.style.display = 'none';
-            errorElement.textContent = message;
+            errorElement.textContent = '❌ ' + message;
             errorElement.style.display = 'flex';
             
             setTimeout(() => {
