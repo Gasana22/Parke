@@ -1104,13 +1104,6 @@
                         amount: 21000,
                         status: 'completed',
                         createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                        type: 'reservation',
-                        description: 'Airport Secure Parking',
-                        amount: -48000,
-                        status: 'failed',
-                        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
                     }
                 ];
                 localStorage.setItem('transactions', JSON.stringify(sampleTransactions));
