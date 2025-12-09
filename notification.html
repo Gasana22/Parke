@@ -499,7 +499,7 @@
         <div class="nav-links">
             <a href="driver_dashboard.html">Dashboard</a>
             <a href="find_parking.html">Find Parking</a>
-            <a href="my_reservations.html">My Reservations</a>
+           
             <a href="payment.html">Payment Methods</a>
             <a href="notification.html" class="active">
                 Notifications
@@ -539,7 +539,7 @@
                 isRead: false,
                 createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
                 actions: [
-                    { label: "View Reservation", url: "my_reservations.html" },
+                    { label: "View Reservation", url: "payments.html" },
                     { label: "Get Directions", url: "find_parking.html" }
                 ]
             },
@@ -562,7 +562,7 @@
                 isRead: false,
                 createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
                 actions: [
-                    { label: "View Reservation", url: "my_reservations.html" },
+                    { label: "View Reservation", url: "find_parking.html" },
                     { label: "Cancel", url: "#" }
                 ]
             },
